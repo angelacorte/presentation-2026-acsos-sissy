@@ -1,0 +1,541 @@
+<!DOCTYPE html><html lang="en"><head>
+	<meta name="generator" content="Hugo 0.155.3">
+    <meta charset="utf-8">
+<title>Integration of Control Lyapunov and Control Barrier Functions for Safety-Critical Guarantees in Aggregate Computing</title>
+<meta name="description" content="Presentation slides for talk on CLF and CBF in Aggregate Computing.">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/presentation-aggregate-clf-cbf/reveal-js/dist/reset.css">
+<link rel="stylesheet" href="/presentation-aggregate-clf-cbf/reveal-js/dist/reveal.css">
+  <link rel="stylesheet" href="/presentation-aggregate-clf-cbf/css/custom-theme.min.7a78e72caf125914da655d67844d418e9128faf357e483d92f54dc1c973079b1.css" id="theme"><link rel="stylesheet" href="/presentation-aggregate-clf-cbf/highlight-js/solarized-dark.min.css">
+<link href="https://fonts.googleapis.com/css?family=Roboto Mono" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Oxygen Mono" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Ubuntu Mono" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/gh/DanySK/css-blur-animation/blur.css" rel="stylesheet" crossorigin="anonymous">
+
+<script src="https://kit.fontawesome.com/81ac037be0.js" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+
+  </head>
+  <body>
+    
+    <div class="reveal">
+      <div class="slides">
+  
+
+    <section><h1 id="integration-of-control-lyapunov-and-control-barrier-functions-for-safety-critical-guarantees-in-aggregate-computing">Integration of Control Lyapunov and Control Barrier Functions for <strong>Safety-Critical Guarantees</strong> in Aggregate Computing</h1>
+<h3 id="angela-cortecchia"><a href="mailto:angela.cortecchia@unibo.it"><strong>Angela Cortecchia</strong></a></h3>
+<div style="text-align: center; width: 100%;">
+<img src="example-background.svg" style="width: 20%">
+</div>
+</section><section>
+<h1 id="how-will-the-drones-avoid-the-obstacle">How will the drones avoid the obstacle?</h1>
+
+
+<div style="margin-top: 4rem;"></div>
+<img alt="Drones in formation" src="./images/drone_formation.svg" width="80%">
+</section><section>
+<h1 id="current-approach">Current approach</h1>
+<img alt="Drones avoiding an obstacle" src="images/drones_formation.png" width="75%">
+
+
+<span class="fragment ">
+  <p>Potential issue:
+consistency is only <em>eventual</em>.</p>
+
+</span>
+
+</section><section>
+<h1 id="eventual-consistency">Eventual consistency</h1>
+<p>How long will it take to re-form the formation?</p>
+<p><img src="./images/drones_eventual_consistency.png" alt="Drones losing formation"></p>
+</section><section>
+<h1 id="eventual-consistency-1">Eventual consistency</h1>
+<p>Potential issues on the transient behavior</p>
+<p><video data-autoplay="" src="./images/eventual_consistency.mp4" type="video/mp4" loop="" muted="" playsinline="" style="width: 40%;">
+</video></p>
+</section><section>
+<h1 id="possible-consequences-of-losing-the-formation">Possible consequences of losing the formation</h1>
+<img alt="Drones losing connection" src="images/drones_changing-formation.png" width="68%">
+<ul>
+<li>Lost connection</li>
+<li>New leaders</li>
+<li>Sub-formations going in different directions</li>
+</ul>
+</section><section>
+<h1 id="how-we-would-like-it-to-behave">How we would like it to behave</h1>
+<p><img src="./images/drones_avoiding_formation.png" alt="Drones avoiding obstacle while keeping formation"></p>
+<p>Did not lose formation, neither connection, avoided the obstacle safely and keep going towards their goal.</p>
+</section><section>
+<h1 id="our-goal">Our goal</h1>
+
+
+<div style="margin-top: 4rem;"></div>
+<p>Ensure <em>guarantees on the transient behavior</em> of the system, not only on the eventual one.</p>
+</section><section>
+<h1 id="how-can-we-achieve-it">How can we achieve it?</h1>
+<p>In control theory, there exist formal methods to specify both stability and safety conditions:</p>
+<ul>
+<li><em>Control Lyapunov Functions</em> (CLF) for <strong>fast convergence</strong> and <strong>stability</strong>;</li>
+<li><em>Control Barrier Functions</em> (CBF) for <strong>safety</strong> in the transient behavior.</li>
+</ul>
+</section><section>
+<h1 id="preliminaries-control-theory">Preliminaries: <strong>Control Theory</strong></h1>
+<p><em>Control Theory</em> is a branch of engineering and mathematics that deals with the behavior of dynamical systems with inputs (<em>controls</em>). <br>
+The main goal is to develop <em>control strategies</em> that <em>modify the system’s behavior to achieve a desired state</em>, <br>
+while minimizing delays or errors, while ensuring safety and control stability.</p>
+<p>Control can only be applied with respect to the system’s <em>temporal evolution</em>.</p>
+<p>A <em>Control Loop</em> is a feedback-driven mechanism that measures the current state of a system, <br>
+<em>compares</em> it to a desired set-point, <br>
+and <em>automatically adjusts the control input</em> to minimize the error between the two.</p>
+</section><section>
+<h1 id="preliminaries-open-and-closed-loop-controls">Preliminaries: <strong>Open and closed loop controls</strong></h1>
+<p>An <em>automatic control system</em> can operate in two ways: as an <em>open-loop</em> control or as a <em>feedback (closed-loop) control</em>.</p>
+
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div style="text-align: justify" class="col "><h4 id="open-loop-control">Open-Loop Control</h4>
+<p>The control <em>input</em> is determined <em>without considering the current state</em> of the system. <br>
+It relies on predefined control actions based on a model of the system.</p>
+</div>
+<div style="text-align: justify" class="col "><h4 id="feedback--closed-loop-control">Feedback / Closed-Loop Control</h4>
+<p>The control input is <em>continuously adjusted</em> based on the current state of the system. <br>
+It uses feedback from the system to correct deviations from the desired state.</p>
+</div>
+</div>
+</div>
+
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div style="text-align: justify" class="col "><p><br>
+<br>
+<img src="./images/open-loop.png" alt="Open-loop control"></p>
+</div>
+<div style="text-align: justify" class="col "><p><img src="./images/closed-loop.png" alt="Closed-loop control"></p>
+</div>
+</div>
+</div>
+</section><section>
+<h1 id="preliminaries-lyapunov-theory">Preliminaries: <strong>Lyapunov Theory</strong></h1>
+
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div style="text-align: justify" class="col "><p><em>Lyapunov Theory</em> provides tools to analyze the <em>stability</em> property of dynamical systems. <br>
+An autonomous dynamical system without a control input is described by the equation <br>
+$\dot{x} = f(x)$</p>
+<p>Starting from an initial state $x_0$,
+there exist some trajectory from there, and we want to verify whether the system converges to a desired equilibrium point $x_e$.</p>
+</div>
+<div style="text-align: justify" class="col "><p><img src="./images/lyapunov-trajectory.png" alt="trajectory"></p>
+</div>
+</div>
+</div>
+</section><section>
+<h1 id="preliminaries-lyapunov-theory-1">Preliminaries: <strong>Lyapunov Theory</strong></h1>
+
+<div class="container w-100 m-0 p-0">
+    <div class="row ">
+
+
+<div style="text-align: justify" class="col col-7">
+
+Given a function $V(x)$, we define it <em>Lyapunov function</em> if every positive level set of the function is an <em>invariant set</em>
+&nbsp;&nbsp;&nbsp;$\Omega = \left\{ x \mid V(x) \le c \right\}$ 
+→ If you start within that set, your trajectory will remain inside it for all future time.<br>
+
+The evolution of the function over time decreases towards $x_e$,
+implying that the system is stable and will converge to the desired equilibrium point.
+
+
+
+<div style="margin-top: 4rem;"></div>
+
+$V(x)$ is a Lyapunov Function if satisfies: 
+<ul>
+    <li>$s.t. V(x_e) = 0, V(x) &gt; 0 \quad \forall \quad x \neq x_e$,</li>
+    <li>$\dot{V}(x) = \frac{\partial V}{\partial x} f(x) &lt; 0 \quad \forall \quad x \neq x_e$,</li>
+</ul>
+
+</div>
+
+
+<div style="text-align: justify" class="col ">
+
+<img src="images/lyapunov-function.png">
+
+</div>
+</div>
+</div>
+</section><section>
+<h1 id="preliminaries-nagumo">Preliminaries: <strong>Nagumo’s Invariance Theorem</strong></h1>
+<p>Given a different function $\dot{x} = f(x)$ and a different trajectory:</p>
+<img alt="trajectory" src="./images/nagumo-trajectory.png" width="30%">
+<p>Our goal is to ensure that the trajectory remains within a region of interest.</p>
+</section><section>
+<h1 id="preliminaries-nagumo-1">Preliminaries: <strong>Nagumo’s Invariance Theorem</strong></h1>
+
+<div class="container w-100 m-0 p-0">
+    <div class="row ">
+
+
+<div style="text-align: justify" class="col col-7">
+
+Given a function $h(x)$, we can define a <em>safe set</em> as:
+&nbsp;&nbsp;&nbsp;$\mathcal{C} = \left\{ x \mid h(x) \ge 0 \right\}$ <br>
+→ the set of states where the system is considered safe, also called <em>super zero level set</em> of $h$.
+
+
+
+<div style="margin-top: 4rem;"></div>
+
+To guarantee that trajectories never leave $\mathcal{C}$ (safety), it is enough to ensure that, on its boundary: <br>
+$\dot{h}(x) \geq 0 \; \forall x \in \partial \mathcal{C}$ <br>
+
+If the condition holds, $\mathcal{C}$ is <em>forward invariant</em>: 
+once inside, the system will always remain inside the safe region.
+
+</div>
+
+
+<div style="text-align: justify" class="col ">
+
+<img src="images/nagumo-invariance03.png">
+
+</div>
+</div>
+</div>
+</section><section>
+<h1 id="preliminaries-control-affine-systems">Preliminaries: <strong>Control-Affine Systems</strong></h1>
+<p>A <strong>Control-Affine System</strong> is a <em>dynamical</em> system described by the equation:</p>
+<p>$\dot{x} = f(x) + g(x)u$</p>
+<p>where:</p>
+<ul>
+<li>$x \in \mathbb{R}^n$ is the <em>state vector</em> (position, velocity, etc.),</li>
+<li>$u \in \mathcal{U} \subset \mathbb{R}^m$ is the <em>control input</em> (input, actuator commands, etc.),</li>
+<li>$f: \mathbb{R}^n \to \mathbb{R}^n$ is the <em>drift vector field</em> (the natural evolution of the system without control),</li>
+<li>$g: \mathbb{R}^n \to \mathbb{R}^{n \times m}$ is the <em>control input matrix</em> (how the control input affects the system).</li>
+</ul>
+<img src="./images/closed-loop-function.png" width="40%">
+</section><section>
+<h1 id="preliminaries-lie-derivatives">Preliminaries: <strong>Lie Derivatives</strong></h1>
+<p>The <em>Lie Derivative</em> represents how a scalar function $h(x)$ changes in time as the state evolves, <br>
+according to the system dynamics along a vector field $f: \mathbb{R}^n \to \mathbb{R}^n$.</p>
+<p>It is represented as $L_f h(x)$</p>
+<div class="fragment" style="margin-top: 5rem;">
+<p>For a Control-Affine System $\dot{x} = f(x) + g(x)u$, the time derivative of $h(x)$ is:</p>
+<p>$\dot{h}(x, u) = L_f h(x) + L_g h(x) u$</p>
+<p>where:</p>
+<ul>
+<li>$L_f h(x)$ is the Lie Derivative of $h$ along $f$ (drift term),</li>
+<li>$L_g h(x)$ is the Lie Derivative of $h$ along $g$ (control term),</li>
+<li>$u$ is the control input.</li>
+</ul>
+<p><em>This notation captures how $h(x)$ evolves due to both natural dynamics and control input over time.</em></p>
+</div>
+</section><section>
+<h1 id="control-lyapunov-functions-clf">Control <strong>Lyapunov</strong> Functions (CLF)</h1>
+<p>A <em>Control Lyapunov Function</em> (CLF) is a scalar function that measures how “far” the system’s state is from a desired target set $\mathcal{X}_d$.</p>
+<p>If we can design such a function so that it always decreases along the trajectories of the system, <br>
+then the state is driven towards $\mathcal{X}_d$ and the system can be stabilized by a suitable feedback control.</p>
+
+
+<div style="margin-top: 4rem;"></div>
+<p>A continuously differentiable function $V: \mathbb{R}^n \to \mathbb{R}_{\geq 0}$
+is a <em>CLF</em> for the target set $\mathcal{X}_d \subseteq \mathbb{R}^n$ if:</p>
+<ol>
+<li>$V(x) = 0 \quad \forall x \in \mathcal{X}_d$ and $V(x) &gt; 0 \quad \forall x \notin \mathcal{X}_d$ (positive definiteness);</li>
+<li>$\forall x \notin \mathcal{X}_d$, there exists a control input $u \in \mathcal{U}$ and a constant $c &gt; 0$ * such that:</li>
+</ol>
+<p>$L_f V(x) + L_g V(x) u \leq -cV(x)$</p>
+<div>
+<small style="text-align: left">
+* The constant $c &gt; 0$ determines the rate of convergence; larger values lead to faster convergence.
+</small>
+</div>
+</section><section>
+<h1 id="clf-example-point-stabilization"><strong>CLF Example</strong>: point stabilization</h1>
+<p>For a system &nbsp;&nbsp;$\dot{p} = u$&nbsp;&nbsp;
+where we want to stabilize the position $p$ of a point at a desired location $p_d$.</p>
+<p>We want to design a control input $u$ that drives $p$ towards $p_d$.</p>
+<p>We then define:</p>
+<ul>
+<li>the CLF: &nbsp;&nbsp;&nbsp;&nbsp;$V(p) = || p - p_d ||^2$</li>
+<li>the Lie Derivatives of $V$ along $f$ and $g$ respectively:
+&nbsp;&nbsp;&nbsp;&nbsp;$L_f V(p)=0$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$L_g V(p) = 2(p - p_d)$</li>
+</ul>
+<p>Thus,&nbsp;&nbsp;&nbsp;&nbsp; $\dot{V}(p,u)=2(p-p_d)^\top u$&nbsp;&nbsp;&nbsp;&nbsp;which links the control input $u$ to the rate of change of $V$.</p>
+<p>Choosing a control input $u$ such that:</p>
+<p>$u=-k(p-p_d)$ for some $k &gt; 0$ ensures that&nbsp;&nbsp;&nbsp;&nbsp;
+$\dot{V} = -2k || p - p_d ||^2 \leq 0$</p>
+<p>Which guarantees that $V(p)$ decreases exponentially over time,
+driving $p$ towards $p_d$ and stabilizing the system at the desired point.</p>
+</section><section>
+<h1 id="control-barrier-functions-cbf">Control <strong>Barrier</strong> Functions (CBF)</h1>
+<p>A <em>Control Barrier Function</em> (CBF) is a scalar function that defines a <em>safe set</em> $\mathcal{C}$<br>
+within which the system’s state must remain to ensure safety.</p>
+<p>We want $\mathcal{C}$ to be forward invariant, i.e., if the system starts or enters in $\mathcal{C}$, it remains in $\mathcal{C}$ for all future time.</p>
+<p>A continuously differentiable function $h: \mathbb{R}^n \to \mathbb{R}$ is a <em>CBF</em> for</p>
+<p>
+$\mathcal{C} = \{ x \mid h(x) \geq 0 \}$
+</p>
+<p>Let $\alpha$ be an extended <em>class-$\mathcal{K}$</em> function (continuous, strictly increasing, $\alpha(0)=0$).<br>
+$\alpha$ acts like a safety buffer: it limits how fast $h(x)$ can decrease, <br>
+so once the system is in the safe region, it is prevented from crossing the safety boundary.</p>
+<p>Thus, if there exists $u \in \mathcal{U}$ such that:<br>
+$L_f h(x) + L_g h(x) u + \alpha(h(x)) \ge 0 \quad \forall x \in \mathcal{D} \supset \mathcal{C}$.<br>
+Then $\dot{h}(x,u) \ge -\alpha(h(x))$</p>
+</section><section>
+<h1 id="cbf-example-collision-avoidance"><strong>CBF Example</strong>: collision avoidance</h1>
+<p>For two agents $i, j$ with positions $p_i, p_j \in \mathbb{R}^d$, we define:</p>
+<p>$h_{ij}(p) = || p_i - p_j ||^2 - D^2$ &nbsp;&nbsp; where $D$ is the minimum safe distance between them.</p>
+<p>
+The safe set is: &nbsp;&nbsp;&nbsp;&nbsp; $\mathcal{C}_{ij} = \{ p \mid h_{ij}(p) \geq 0 \}$
+</p>
+<p>Then we’ll compute the Lie Derivatives of $h_{ij}$ along $f$ and $g$ respectively:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;$L_f h_{ij}(p) = 0$, &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$L_g h_{ij}(p)[u_i;u_j] = 2(p_i - p_j)^\top(u_i-u_j)$</p>
+<p>To ensure collision avoidance, we need to find control inputs $u_i, u_j$ such that: <br>
+$2(p_i - p_j)^\top(u_i-u_j) + \alpha(h_{ij}(p)) \geq 0$</p>
+</section><section>
+<h1 id="clf-cbf-quadratic-program">CLF-CBF-<strong>Quadratic Program</strong></h1>
+<p>To get a control input that satisfies both CLF and CBF conditions,
+in order to enforce both stability and safety, <br>
+we can use them as constraints in a quadratic optimization problem.</p>
+<p>$\underset{u,s \ge 0}{\min} || u - u_{des} || + ws^2$</p>
+<p>$s.t. \quad L_f V(x) + L_g V(x)u \leq -c V(x) + s$,</p>
+<p>$L_f h_\ell(x) + L_g h_\ell(x) u + \alpha(h_\ell(x)) \ge 0 \quad \forall \ell$</p>
+<p>Where:</p>
+<ul>
+<li>$u_{des}$ is a desired control input in the absence of constraints;</li>
+<li>$s$ is a slack variable to relax the CLF constraint when necessary (to prioritize safety);</li>
+<li>$w$ is a weight to penalize the slack variable;</li>
+<li>$\ell$ indexes multiple CBF constraints.</li>
+</ul>
+<p>The CLF is softened to ensure feasibility, while CBFs are enforced strictly to guarantee safety.</p>
+<p><em>The QP is solved at each time step to compute the control input $u$ that balances stability and safety, <br>
+while minimizing deviation from the desired input.</em></p>
+</section><section>
+<h1 id="research-questions">Research question(<strong>s</strong>)</h1>
+<ul>
+<li>How to integrate CLF and CBF in Aggregate Computing?</li>
+<li>How to specify safety-critical requirements both at the <em>single</em> and the <em>collective</em> level?</li>
+<li>How to enforce safety and stability guarantees during the transient behavior of distributed adaptive systems?</li>
+</ul>
+</section><section>
+<h1 id="how-to-integrate-clf-and-cbf-in-ac">How to <strong>integrate</strong> CLF and CBF in AC?</h1>
+<ul>
+<li>Use AC to define the desired collective behavior and objectives, as usual;</li>
+<li>Collect neighbor information and local states at each device;</li>
+<li>Formulate local CLF and CBF conditions based on the collective objectives and safety requirements;</li>
+<li>At each device, solve a local QP that incorporates the CLF and CBF constraints to compute the control input;</li>
+<li>Apply the computed control input to the device’s actuators;</li>
+<li>Broadcast the control input and state information to neighbors for the next round of computationl.</li>
+</ul>
+</section><section>
+<h1 id="overview">Overview</h1>
+
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div style="text-align: justify" class="col "><h3 id="benefits-of-the-integration">Benefits of the integration</h3>
+<ul>
+<li>Formal specification of safety and stability requirements at the collective level.</li>
+<li>Making safety-critical guarantees an integral part of the Aggregate Computing model.</li>
+<li>Safety and convergence are enforced by QP solvers at each device, ensuring local adherence to global requirements.</li>
+<li>Possible guarantees on transient behavior, not only eventual consistency.</li>
+</ul>
+</div>
+<div style="text-align: justify" class="col fragment"><h3 id="possible-challenges-limitations">Possible challenges-limitations</h3>
+<ul>
+<li>Computational overhead of solving QPs on resource-constrained devices.</li>
+<li>Asynchrony and communication delays must be considered in the control design.</li>
+</ul>
+</div>
+</div>
+</div>
+</section><section>
+<h1 id="aggregate-computing--clf--cbf-use-cases">Aggregate Computing + CLF + CBF <strong>use cases</strong></h1>
+<p>Guarantees on transient behavior in safety-critical scenarios, e.g.:</p>
+<ul>
+<li>Obstacle avoidance while maintaining formation;</li>
+<li>Collision avoidance between agents;</li>
+<li>Safe navigation in dynamic environments;</li>
+<li>Staying inside a designated area;</li>
+<li>Maintaining sufficient network connectivity;</li>
+<li>Respecting density limits in regions of interest.</li>
+</ul>
+</section><section>
+<h1 id="suggestions">Suggestions?</h1>
+<!--
+In control theory,
+there exist formal methods that allow us to specify conditions for both achieving a desired objective (stability) and
+ensuring that the system remains within safe operating regions (safety).
+These conditions can be expressed through well-defined mathematical functions that act as certificates in the assumption that the model captures the reality well.
+
+Aggregate Computing already provides formal tools and stability guarantees,
+for instance through self-stabilizing constructs and Lyapunov-based analysis.
+However, these guarantees are eventual: they ensure convergence, but do not control the transient behavior.
+As a result, in safety-critical scenarios (e.g., robotics), the system may temporarily enter unsafe regions during adaptation.
+
+Control Lyapunov Functions and Control Barrier Functions provide a principled way to express stability and safety requirements
+through mathematical conditions that can be verified and enforced at runtime.
+By integrating those requirements into Aggregate Computing,
+we introduce a layer in which safety-critical conditions can be specified,
+checked, and maintained directly at the collective level, enabling predictable and robust execution of distributed adaptive systems.
+
+
+In control theory, stability and safety can be formally specified through conditions and constraints.
+Aggregate Computing provides eventual stability but cannot prevent transient unsafe behavior.
+Control Lyapunov and Control Barrier Functions allow enforcing stability and safety at runtime.
+Integrating them into Aggregate Computing would enable collective-level safety guarantees.
+The talk will outline motivation, applications, and a possible integration path.
+
+--- 
+
+Domanda:
+
+Se avessimo ad esempio uno sciame di droni in formazione a V e un'ostacolo esattamente nella loro traiettoria,
+come eviteranno l'ostacolo?
+
+**risposte dal pubblico**
+
+potrebbe anche succedere che si scollega la connessione tra di loro e ognuno vada per conto suo
+
+---
+--></section>
+
+  
+
+
+</div>
+      
+
+    </div>
+<script type="text/javascript" src="/presentation-aggregate-clf-cbf/reveal-hugo/object-assign.js"></script>
+
+<a href="/presentation-aggregate-clf-cbf/reveal-js/dist/print/" id="print-location" style="display: none;"></a>
+
+<script type="application/json" id="reveal-hugo-site-params">{"custom_theme":"custom-theme.scss","custom_theme_compile":true,"custom_theme_options":{"enablesourcemap":true,"targetpath":"css/custom-theme.css"},"height":"1080","highlight_theme":"solarized-dark","history":true,"mermaid":[{}],"slide_number":true,"theme":"league","transition":"slide","transition_speed":"fast","width":"1920"}</script>
+<script type="application/json" id="reveal-hugo-page-params">{"katex":{"enable":true}}</script>
+
+<script src="/presentation-aggregate-clf-cbf/reveal-js/dist/reveal.js"></script>
+
+
+  
+  
+  <script type="text/javascript" src="/presentation-aggregate-clf-cbf/reveal-js/plugin/markdown/markdown.js"></script>
+  
+  <script type="text/javascript" src="/presentation-aggregate-clf-cbf/reveal-js/plugin/highlight/highlight.js"></script>
+  
+  <script type="text/javascript" src="/presentation-aggregate-clf-cbf/reveal-js/plugin/zoom/zoom.js"></script>
+  
+  <script type="text/javascript" src="/presentation-aggregate-clf-cbf/reveal-js/plugin/notes/notes.js"></script>
+  
+  
+  <script type="text/javascript" src="/presentation-aggregate-clf-cbf/reveal-js/plugin/notes/notes.js"></script>
+
+
+
+
+<script type="text/javascript">
+  
+  
+  function camelize(map) {
+    if (map) {
+      Object.keys(map).forEach(function(k) {
+        newK = k.replace(/(\_\w)/g, function(m) { return m[1].toUpperCase() });
+        if (newK != k) {
+          map[newK] = map[k];
+          delete map[k];
+        }
+      });
+    }
+    return map;
+  }
+
+  var revealHugoDefaults = { center: true, controls: true, history: true, progress: true, transition: "slide" };
+
+  var revealHugoPlugins = {
+    plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealZoom ]
+   };
+  var revealHugoSiteParams = JSON.parse(document.getElementById('reveal-hugo-site-params').innerHTML);
+  var revealHugoPageParams = JSON.parse(document.getElementById('reveal-hugo-page-params').innerHTML);
+  
+  var options = Object.assign({},
+    camelize(revealHugoDefaults),
+    camelize(revealHugoSiteParams),
+    camelize(revealHugoPageParams),
+    camelize(revealHugoPlugins));
+  Reveal.initialize(options);
+</script>
+
+
+
+
+
+
+
+  
+  
+
+  
+  
+
+  
+  
+
+
+
+
+
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+</script>
+
+<script type="text/javascript" id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+
+<script>
+  if (/.*?(\?|&)print-pdf/.test(window.location.toString())) {
+      var ytVideos = document.getElementsByTagName("iframe")
+      for (let i = 0; i < ytVideos.length; i++) {
+          var videoFrame = ytVideos[i]
+          var isYouTube = /^https?:\/\/(www.)youtube\.com\/.*/.test(videoFrame.src)
+          if (isYouTube) {
+              console.log(`Removing ${videoFrame.src}`)
+              var parent = videoFrame.parentElement
+              videoFrame.remove()
+              var p = document.createElement('p')
+              p.append(
+                  document.createTextNode(
+                      "There was an embedded video here, but it is disabled in the printed version of the slides."
+                  )
+              )
+              p.append(document.createElement('br'))
+              p.append(
+                  document.createTextNode(
+                      `Visit instead ${
+                          videoFrame.src
+                      } or ${
+                          videoFrame.src.replace(
+                              /(^https?:\/\/(www.)youtube\.com)\/(embed\/)(\w+).*/,
+                              "https://www.youtube.com/watch?v=$4"
+                          )
+                      }`
+                  )
+              )
+              parent.appendChild(p)
+          }
+      }
+  }
+</script>
+
+
+    
+  
+
+</body></html>
