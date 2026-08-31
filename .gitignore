@@ -1,0 +1,10 @@
+public/
+build/
+_gen/
+*.pdf
+*.hprof
+*build.lock
+.idea/
+content/.DS_Store
+content/images/.DS_Store
+.DS_Store
