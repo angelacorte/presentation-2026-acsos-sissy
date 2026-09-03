@@ -8,7 +8,7 @@ Presentation slides for the talk on **Integration of Control Lyapunov and Contro
 
 ## View the Presentation
 
-The presentation is available at: https://angelacorte.github.io/presentation-aggregate-clf-cbf/
+The presentation is available at: https://angelacorte.github.io/presentation-2026-acsos-sissy/
 
 ## Overview
 
@@ -30,8 +30,8 @@ This presentation covers the integration of control theory concepts into Aggrega
 
 1. Clone the repository with submodules:
    ```bash
-   git clone --recurse-submodules https://github.com/angelacorte/presentation-aggregate-clf-cbf.git
-   cd presentation-aggregate-clf-cbf
+   git clone --recurse-submodules https://github.com/angelacorte/presentation-2026-acsos-sissy.git
+   cd presentation-2026-acsos-sissy
    ```
 
 2. Build and serve the slides:
@@ -39,7 +39,7 @@ This presentation covers the integration of control theory concepts into Aggrega
    hugo serve
    ```
 
-3. The slides will be available at `http://localhost:1313/presentation-aggregate-clf-cbf/`.
+3. The slides will be available at `http://localhost:1313/presentation-2026-acsos-sissy/`.
 
 ## License
 

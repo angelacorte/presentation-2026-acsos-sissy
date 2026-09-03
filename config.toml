@@ -1,4 +1,4 @@
-baseURL = "https://angelacorte.github.io/presentation-aggregate-clf-cbf/"
+baseURL = "https://angelacorte.github.io/presentation-2026-acsos-sissy/"
 languageCode = "en-us"
 title = "Presentation: Aggregate CLF-CBF"
 disableKinds = ["sitemap", "RSS"]
