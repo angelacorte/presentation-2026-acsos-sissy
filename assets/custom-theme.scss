@@ -301,13 +301,142 @@ kbd {
 }
 
 .reveal .slide-background:after {
-  content: "Cortecchia A. - Integration of Control Lyapunov and Control Barrier Functions for Safety-Critical Guarantees in Aggregate Computing";
+  content: "Cortecchia et al. - Toward Safe Aggregate Computing - SISSY @ IEEE ACSOS 2026";
   position: absolute;
   bottom: 2.5%;
   right: 6%;
   z-index: -1;
   color: $linkColor;
   font-size: .4em;
+}
+
+// Talk-specific layouts. Keep the visual language flat and readable from a distance.
+.reveal section {
+  line-height: 1.18;
+}
+
+.reveal section .paper-figure {
+  display: block;
+  margin: 0.2em auto 0.35em;
+  max-height: 12.2em;
+}
+
+.reveal section .paper-figure.architecture {
+  width: 72%;
+}
+
+.reveal section .paper-figure.device-view {
+  width: 54%;
+  max-height: 10.5em;
+}
+
+.reveal section .simulation {
+  display: block;
+  width: 67%;
+  max-height: 15.2em;
+  margin: 0.15em auto 0.25em;
+  border-radius: 0.3em;
+  background: #ffffff;
+}
+
+.reveal section .takeaway {
+  margin: 0.45em auto 0;
+  padding: 0.3em 0.6em;
+  width: 84%;
+  color: #095aa6;
+  background: rgba(73, 153, 228, 0.11);
+  border-left: 0.22em solid #b81f0b;
+  font-weight: 600;
+  text-align: left;
+}
+
+.reveal section .takeaway.final {
+  font-size: 1.12em;
+  text-align: center;
+}
+
+.reveal section .three-beats {
+  display: flex;
+  gap: 1.2em;
+  justify-content: center;
+  margin: 0.1em auto 0.25em;
+  font-size: 0.82em;
+}
+
+.reveal section .three-beats span {
+  flex: 1;
+}
+
+.reveal section .formula {
+  margin: 0.2em auto 0.35em;
+  font-size: 0.82em;
+}
+
+.reveal section .constraint-list {
+  width: 80%;
+  margin: 0.2em auto;
+  text-align: left;
+}
+
+.reveal section .constraint-list div {
+  display: grid;
+  grid-template-columns: 34% 66%;
+  padding: 0.28em 0.1em;
+  border-bottom: 1px solid rgba(9, 90, 166, 0.2);
+}
+
+.reveal section .constraint-list span {
+  color: #333333;
+}
+
+.reveal section .metrics {
+  display: flex;
+  justify-content: center;
+  gap: 1.6em;
+  margin: 1.2em auto;
+}
+
+.reveal section .metrics div {
+  min-width: 4.8em;
+  text-align: center;
+}
+
+.reveal section .metrics strong,
+.reveal section .metrics span {
+  display: block;
+}
+
+.reveal section .metrics strong {
+  color: #b81f0b;
+  font-size: 1.5em;
+}
+
+.reveal section .metrics span {
+  color: #095aa6;
+  font-size: 0.72em;
+}
+
+.reveal section .experiment-stack {
+  margin-top: 1.1em;
+}
+
+.reveal section .small-center,
+.reveal section .future,
+.reveal section .next-step {
+  width: 82%;
+  margin: 0.7em auto;
+  font-size: 0.75em;
+  text-align: center;
+}
+
+.reveal section .closing {
+  width: 82%;
+  margin: 0.6em auto;
+  text-align: left;
+}
+
+.reveal section .closing p {
+  margin: 0.55em 0;
 }
 
 

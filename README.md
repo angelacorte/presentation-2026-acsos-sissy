@@ -1,6 +1,6 @@
-# Aggregate CLF-CBF Presentation
+# Toward Safe Aggregate Computing
 
-Presentation slides for the talk on **Integration of Control Lyapunov and Control Barrier Functions for Safety-Critical Guarantees in Aggregate Computing**.
+Presentation slides for the SISSY @ IEEE ACSOS 2026 talk on **Toward Safe Aggregate Computing: A Distributed Control-Theoretic Safety Filter for Robot Swarms**.
 
 ## Author
 
@@ -12,12 +12,13 @@ The presentation is available at: https://angelacorte.github.io/presentation-202
 
 ## Overview
 
-This presentation covers the integration of control theory concepts into Aggregate Computing to ensure safety-critical guarantees. Key topics include:
+This presentation covers the implemented integration of Aggregate Computing with a distributed control-theoretic safety filter for robot swarms. Key topics include:
 
 - **Control Lyapunov Functions (CLF)** for fast convergence and stability
 - **Control Barrier Functions (CBF)** for safety in transient behavior
 - CLF-CBF Quadratic Program optimization
-- Use cases in distributed adaptive systems
+- Distributed local and pairwise constraints solved through ADMM
+- Proof-of-concept experiments with animated simulations
 
 ## Building Locally
 
