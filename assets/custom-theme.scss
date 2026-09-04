@@ -27,6 +27,14 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono');
 // @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono');
 
+@font-face {
+  font-family: 'Fira Math';
+  src: url('../fonts/FiraMath-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 //$backgroundColor: rgba(242, 248, 252, 0.58);
 //$backgroundColor: #EFF1ED;
 $backgroundColor: #f3f8fc;
@@ -38,7 +46,7 @@ $blue: #2479bd;
 $deepBlue: #063f72;
 $softBlue: #dff2ff;
 $paperWhite: #ffffff;
-$uniboRed: #bb2e29;
+$uniboRed: #d97706;
 $mutedInk: #52616d;
 $cardShadow: 0 0.45rem 1.35rem rgba(6, 63, 114, 0.13);
 
@@ -167,11 +175,11 @@ p.fragment.fade-out {
   font-size: 1.2em;
   color: #333333;
   padding:0.1em 0.1em 0.1em 0.1em;
-  border-color: #AD2624;
+  border-color: #d97706;
   border-style: solid;
   border-width: 0.1em;
   border-radius: 1em;
-  border-left:0.7em solid #AD2624 ;
+  border-left:0.7em solid #d97706 ;
   line-height: 1.2em;
   position: relative;
   background:#EDEDED;
@@ -792,14 +800,14 @@ html.blur-animation-light .backgrounds {
 .reveal .pf-sensor path,
 .reveal .eval-agent path {
   fill: rgba(255, 255, 255, 0.88);
-  stroke: #bb2e29;
+  stroke: #d97706;
   stroke-width: 4;
 }
 
 .reveal .pf-sensor circle,
 .reveal .eval-agent circle {
-  fill: rgba(187, 46, 41, 0.12);
-  stroke: #bb2e29;
+  fill: rgba(217, 119, 6, 0.12);
+  stroke: #d97706;
   stroke-width: 4;
 }
 
@@ -855,7 +863,7 @@ html.blur-animation-light .backgrounds {
 }
 
 .reveal .pf-observation {
-  stroke: #bb2e29;
+  stroke: #d97706;
   marker-end: url(#pf-arrow-red);
 }
 
@@ -877,7 +885,7 @@ html.blur-animation-light .backgrounds {
 
 .reveal #pf-arrow-red path,
 .reveal #eval-arrow-red path {
-  fill: #bb2e29;
+  fill: #d97706;
 }
 
 .reveal .pf-device text,
@@ -904,7 +912,7 @@ html.blur-animation-light .backgrounds {
 }
 
 .reveal .pf-question text {
-  fill: #bb2e29;
+  fill: #d97706;
   font-size: 59.4px;
 }
 
@@ -928,7 +936,7 @@ html.blur-animation-light .backgrounds {
 
 .reveal .pf-red-label,
 .reveal .eval-red-label {
-  fill: #bb2e29;
+  fill: #d97706;
 }
 
 .reveal .evaluation-geometry-diagram {
@@ -960,7 +968,7 @@ html.blur-animation-light .backgrounds {
 }
 
 .reveal .eval-distance {
-  stroke: #bb2e29;
+  stroke: #d97706;
   marker-end: url(#eval-arrow-red);
 }
 
@@ -974,7 +982,7 @@ html.blur-animation-light .backgrounds {
 }
 
 .reveal .eval-angle {
-  stroke: #bb2e29;
+  stroke: #d97706;
 }
 
 .reveal .eval-legend line {
@@ -1179,8 +1187,8 @@ html.blur-animation-light .backgrounds {
 .reveal .framework-card.is-red,
 .reveal .meta-panel.is-red,
 .reveal .takeaway-card.is-red {
-  border-color: rgba(187, 46, 41, 0.24);
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(187, 46, 41, 0.08));
+  border-color: rgba(217, 119, 6, 0.24);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(217, 119, 6, 0.08));
 }
 
 .reveal .framework-card.is-red .framework-card-title,
@@ -1407,7 +1415,7 @@ html.blur-animation-light .backgrounds {
 
 .reveal .takeaway-card.is-red .takeaway-number {
   color: white;
-  background: linear-gradient(135deg, $uniboRed, #d85a56);
+  background: linear-gradient(135deg, $uniboRed, #f59e0b);
 }
 
 .reveal section.has-light-background .takeaway-card.is-red .takeaway-number {
@@ -1505,7 +1513,7 @@ html.blur-animation-light .backgrounds {
 }
 
 .reveal .challenge-item.is-critical {
-  border-top-color: rgba(187, 46, 41, 0.72);
+  border-top-color: rgba(217, 119, 6, 0.72);
 }
 
 .reveal .challenge-item.is-critical h3 {
@@ -1513,7 +1521,7 @@ html.blur-animation-light .backgrounds {
 }
 
 .reveal .challenge-item.is-critical .challenge-icon {
-  background: rgba(187, 46, 41, 0.10);
+  background: rgba(217, 119, 6, 0.10);
 }
 
 .reveal .ac-overview {
@@ -1631,9 +1639,9 @@ html.blur-animation-light .backgrounds {
 
 .reveal .closing-layout {
   display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  gap: 1.45rem;
-  width: 89%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  width: 88%;
   margin: 0.45rem auto 0;
   align-items: start;
   text-align: left;
@@ -1674,8 +1682,13 @@ html.blur-animation-light .backgrounds {
 }
 
 .reveal .future-panel {
-  padding-left: 1.1rem;
-  border-left: 0.18rem solid rgba(57, 167, 238, 0.42);
+  min-height: 100%;
+  padding-left: 1.35rem;
+  border-left: 0.12rem solid $accentBlue;
+}
+
+.reveal .takeaway-editorial {
+  padding-right: 1.35rem;
 }
 
 .reveal .future-group {
@@ -1684,7 +1697,7 @@ html.blur-animation-light .backgrounds {
 
 .reveal .future-group h3 {
   margin: 0 0 0.25rem;
-  color: $deepBlue;
+  color: $uniboRed;
   font-size: 0.78em;
 }
 
@@ -1768,7 +1781,7 @@ html.blur-animation-light .backgrounds {
 .reveal .constraint-line {
   margin-top: 0.72rem;
   padding-top: 0.5rem;
-  border-top: 0.16rem solid rgba(187, 46, 41, 0.55);
+  border-top: 0.16rem solid rgba(217, 119, 6, 0.55);
 }
 
 .reveal .constraint-line span {
@@ -1824,7 +1837,7 @@ html.blur-animation-light .backgrounds {
 }
 
 .reveal .equation-line.is-focus {
-  border-top-color: rgba(187, 46, 41, 0.28);
+  border-top-color: rgba(217, 119, 6, 0.28);
 }
 
 .reveal .equation-line.is-focus span {
@@ -1905,7 +1918,7 @@ html.blur-animation-light .backgrounds {
 
 .reveal .compare-item.is-focus,
 .reveal .idea-side.is-focus {
-  border-top-color: rgba(187, 46, 41, 0.58);
+  border-top-color: rgba(217, 119, 6, 0.58);
 }
 
 .reveal .compare-item h3,
@@ -1974,7 +1987,7 @@ html.blur-animation-light .backgrounds {
 
 .reveal .healing-statement {
   padding-left: 1.1rem;
-  border-left: 0.18rem solid rgba(187, 46, 41, 0.46);
+  border-left: 0.18rem solid rgba(217, 119, 6, 0.46);
 }
 
 .reveal .healing-statement p {
@@ -2085,7 +2098,7 @@ html.blur-animation-light .backgrounds {
 
 :root {
   --deck-orange: #39a7ee;
-  --deck-teal: #bb2e29;
+  --deck-teal: #d97706;
   --deck-green: #0b75c9;
 }
 
@@ -2103,7 +2116,7 @@ html.blur-animation-light .backgrounds {
 .reveal .local-round-label-highlight-all.local-round-phase-compute {
   border-color: var(--deck-teal);
   color: var(--deck-teal);
-  background: rgba(187, 46, 41, 0.08);
+  background: rgba(217, 119, 6, 0.08);
   animation: local-round-pulse-teal 2.2s ease-in-out infinite;
 }
 
@@ -2120,16 +2133,16 @@ html.blur-animation-light .backgrounds {
   font-size: 0.42em;
   color: white;
   background: var(--deck-teal);
-  box-shadow: 0 0 0 13px rgba(187, 46, 41, 0.16);
+  box-shadow: 0 0 0 13px rgba(217, 119, 6, 0.16);
 }
 
 .reveal .local-round-phase-compute {
-  border-color: rgba(187, 46, 41, 0.24);
+  border-color: rgba(217, 119, 6, 0.24);
 }
 
 @keyframes local-round-pulse-teal {
   50% {
-    box-shadow: 0 0 0 8px rgba(187, 46, 41, 0.15);
+    box-shadow: 0 0 0 8px rgba(217, 119, 6, 0.15);
   }
 }
 
@@ -2204,4 +2217,435 @@ html.blur-animation-light .backgrounds {
   margin: 0.35rem auto 0;
   text-align: center;
   font-size: 0.52em;
+}
+
+// Conference deck refresh: restrained navy, cyan, and amber palette.
+
+$deckNavy: #0b1f33;
+$deckBlue: #1668b2;
+$deckCyan: #2ba6d8;
+$deckAmber: #d97706;
+$deckMist: #f4f8fb;
+$deckLine: #c7d8e6;
+
+.reveal {
+  color: $deckNavy;
+  font-family: $mainFont;
+}
+
+.reveal .slide-background {
+  background-color: $deckMist;
+  background-image: none;
+}
+
+.reveal .slide-background::after {
+  right: 4.8%;
+  bottom: 2.2%;
+  z-index: 0;
+  content: "Toward Safe Aggregate Computing · SISSY 2026";
+  color: rgba(11, 31, 51, 0.42);
+  font-size: 0.34em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.reveal .slides > section {
+  box-sizing: border-box;
+  padding: 0.2em 0.7em 0.9em;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3 {
+  font-family: $headingFont;
+  text-transform: none;
+}
+
+.reveal h1 {
+  margin: 0 0 0.24em;
+  color: $deckNavy;
+  font-size: 1.42em;
+  font-weight: 750;
+  line-height: 1.04;
+  text-align: left;
+}
+
+.reveal h1::after {
+  display: block;
+  width: 2.4em;
+  height: 0.09em;
+  margin-top: 0.18em;
+  border-radius: 999px;
+  background: $deckCyan;
+  content: "";
+}
+
+.reveal h3 {
+  margin: 0 0 0.6em;
+  color: $deckBlue;
+  font-size: 0.84em;
+  font-weight: 600;
+  line-height: 1.15;
+  text-align: left;
+}
+
+.reveal p,
+.reveal li {
+  color: $deckNavy;
+  line-height: 1.25;
+}
+
+.reveal strong,
+.reveal b {
+  color: $deckBlue;
+}
+
+.reveal a {
+  color: $deckBlue;
+}
+
+.reveal ul {
+  margin-left: 1em;
+}
+
+.reveal li::marker {
+  color: $deckAmber;
+}
+
+.reveal div.col {
+  padding: 0.45em 0.65em;
+  text-align: left !important;
+}
+
+.reveal .local-round-slide,
+.reveal .local-round-visual,
+.reveal .local-round-loop {
+  width: 100%;
+}
+
+.reveal .local-round-loop-svg {
+  width: 100%;
+  max-height: 12.8em;
+}
+
+.reveal .takeaway {
+  box-sizing: border-box;
+  width: 88%;
+  max-width: 88% !important;
+  margin: 0.65em auto 0;
+  padding: 0.5em 0.75em;
+  border-left: 0.16em solid $deckAmber;
+  border-radius: 0 0.28em 0.28em 0;
+  background: rgba(43, 166, 216, 0.1);
+  color: $deckNavy;
+  font-size: 0.72em;
+  font-weight: 650;
+  line-height: 1.18;
+  text-align: left;
+}
+
+.reveal .takeaway.final {
+  background: rgba(22, 104, 178, 0.12);
+  font-size: 0.78em;
+}
+
+.reveal .takeaway.final.closing-statement {
+  width: 88%;
+  max-width: 88% !important;
+  margin-top: 0.7em;
+  font-size: 0.68em;
+}
+
+.reveal .pattern-line span {
+  border-bottom-color: rgba(43, 166, 216, 0.7);
+  color: $deckBlue;
+}
+
+.reveal .takeaway-line.is-critical span,
+.reveal .takeaway-line.is-critical strong,
+.reveal .deck-title-accent,
+.reveal .accent-red {
+  color: $deckAmber;
+}
+
+.reveal .formula {
+  width: 76%;
+  margin: 0.9em auto;
+  padding: 0.75em 1em;
+  border-top: 0.12em solid $deckCyan;
+  border-bottom: 1px solid $deckLine;
+  background: rgba(255, 255, 255, 0.66);
+  color: $deckNavy;
+  font-size: 0.9em;
+}
+
+.reveal .paper-figure.architecture,
+.reveal .paper-figure.device-view {
+  display: block;
+  width: 72%;
+  max-height: 13.6em;
+  margin: 0.2em auto 0.55em;
+}
+
+.reveal .three-beats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 86%;
+  margin: 0.25em auto;
+  border-top: 1px solid $deckLine;
+  text-align: left;
+}
+
+.reveal .three-beats span {
+  padding: 0.48em 0.7em;
+  color: $deckNavy;
+  font-size: 0.67em;
+  line-height: 1.18;
+}
+
+.reveal .three-beats span + span {
+  border-left: 1px solid $deckLine;
+}
+
+.reveal .three-beats b {
+  color: $deckAmber;
+}
+
+.reveal .constraint-list {
+  width: 84%;
+  margin: 0.45em auto;
+  text-align: left;
+}
+
+.reveal .constraint-list > div {
+  display: grid;
+  grid-template-columns: 0.72fr 1.45fr;
+  gap: 1em;
+  padding: 0.42em 0.15em;
+  border-bottom: 1px solid $deckLine;
+  font-size: 0.68em;
+  line-height: 1.16;
+}
+
+.reveal .constraint-list b {
+  color: $deckAmber;
+}
+
+.reveal .metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 82%;
+  margin: 0.8em auto 1em;
+  border-top: 0.12em solid $deckCyan;
+  border-bottom: 1px solid $deckLine;
+}
+
+.reveal .metrics > div {
+  display: grid;
+  gap: 0.1em;
+  padding: 0.65em 0.35em;
+}
+
+.reveal .metrics > div + div {
+  border-left: 1px solid $deckLine;
+}
+
+.reveal .metrics strong {
+  color: $deckAmber;
+  font-size: 1.15em;
+}
+
+.reveal .metrics span {
+  color: $deckNavy;
+  font-size: 0.55em;
+  font-weight: 600;
+}
+
+.reveal .experiment-stack {
+  max-width: 86% !important;
+  margin: 0.35em auto;
+  color: $deckNavy;
+  font-size: 0.7em;
+  text-align: center;
+}
+
+.reveal .small-center {
+  max-width: 74% !important;
+  margin: 1em auto 0;
+  color: rgba(11, 31, 51, 0.68);
+  font-size: 0.56em;
+  text-align: center;
+}
+
+.reveal .simulation {
+  display: block;
+  width: auto;
+  max-width: 72%;
+  max-height: 14.7em;
+  margin: 0.25em auto 0.55em;
+  border: 1px solid rgba(22, 104, 178, 0.16);
+  border-radius: 0.18em;
+  background: #fff;
+  box-shadow: 0 0.35em 1.2em rgba(11, 31, 51, 0.1);
+}
+
+.reveal .next-step,
+.reveal .future {
+  max-width: 82% !important;
+  margin: 0.5em auto;
+  color: rgba(11, 31, 51, 0.72);
+  font-size: 0.58em;
+  text-align: center;
+}
+
+.reveal .future {
+  box-sizing: border-box;
+  margin-top: 0.72em;
+  padding: 0.42em 0.7em;
+  border-left: 0.14em solid $deckAmber;
+  background: rgba(43, 166, 216, 0.08);
+  color: $deckNavy;
+  font-size: 0.66em;
+  font-weight: 600;
+  text-align: left;
+}
+
+.reveal .future strong {
+  color: $deckAmber;
+}
+
+.reveal .closing {
+  width: 82%;
+  margin: 0.6em auto;
+  text-align: left;
+}
+
+.reveal .closing p {
+  margin: 0;
+  padding: 0.55em 0.2em;
+  border-bottom: 1px solid $deckLine;
+  font-size: 0.73em;
+}
+
+.reveal .controls {
+  color: $deckAmber;
+}
+
+.reveal .progress span {
+  background: $deckBlue;
+}
+
+// Minimal cover with correctly scaled institutional marks.
+.reveal .slides > section:first-child {
+  width: 94%;
+  padding: 0.2em 0.8em 1em;
+  text-align: center;
+}
+
+.reveal .slides > section:first-child > div[style*="margin-top"] {
+  display: none;
+}
+
+.reveal .slides > section:first-child h1 {
+  max-width: none;
+  margin: 0 auto;
+  font-size: 1.58em;
+  line-height: 1.02;
+  text-align: center;
+}
+
+.reveal .slides > section:first-child h1:first-child {
+  color: $deckBlue;
+  font-size: 0.84em;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+
+.reveal .slides > section:first-child h1:first-child::after {
+  display: none;
+}
+
+.reveal .slides > section:first-child h1:nth-of-type(2)::after {
+  width: 3.4em;
+  margin: 0.3em auto 0.45em;
+}
+
+.reveal .slides > section:first-child > p:first-of-type {
+  max-width: none;
+  margin: 0 auto;
+  font-size: 0.64em;
+  text-align: center;
+}
+
+.reveal .slides > section:first-child > p:nth-of-type(2) {
+  display: flex;
+  gap: 2.4em;
+  justify-content: center;
+  max-width: 54em;
+  margin: 0.9em auto 0;
+  color: rgba(11, 31, 51, 0.76);
+  font-size: 0.5em;
+  line-height: 1.28;
+  text-align: center;
+}
+
+.reveal .slides > section:first-child .deck-affiliation {
+  display: inline-block;
+  width: 46%;
+  vertical-align: top;
+}
+
+.reveal .hero-logo {
+  display: flex;
+  gap: 1.4em;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 1em auto 0;
+}
+
+.reveal .hero-logo img {
+  width: auto !important;
+  max-width: 12em;
+  height: 2.35em;
+  max-height: 2.35em;
+  margin: 0;
+  padding: 0;
+  object-fit: contain;
+}
+
+.reveal .hero-logo img:last-child {
+  height: 2.65em;
+  max-height: 2.65em;
+}
+
+.reveal .backgrounds .slide-background:first-child {
+  background-color: $deckMist;
+  background-image: none;
+}
+
+.reveal .slide-background:not(.present)::after {
+  display: none;
+}
+
+.reveal .slides > section:last-child {
+  text-align: center;
+}
+
+.reveal .slides > section:last-child h1 {
+  color: $deckNavy;
+  text-align: center;
+}
+
+.reveal .slides > section:last-child h1::after {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.reveal .slides > section:last-child img {
+  width: 5.8em;
+  margin: 0.8em auto 0.25em;
+  padding: 0.22em;
+  border: 1px solid $deckLine;
+  background: white;
 }
