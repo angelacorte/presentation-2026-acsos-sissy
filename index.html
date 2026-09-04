@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/presentation-2026-acsos-sissy/reveal-js/dist/reset.css">
 <link rel="stylesheet" href="/presentation-2026-acsos-sissy/reveal-js/dist/reveal.css">
-  <link rel="stylesheet" href="/presentation-2026-acsos-sissy/css/custom-theme.min.309dd32792160c789bc8835d86d3e818dc5470d6a0a4c9bdf887335ebe3eec29.css" id="theme"><link rel="stylesheet" href="/presentation-2026-acsos-sissy/highlight-js/solarized-dark.min.css">
+  <link rel="stylesheet" href="/presentation-2026-acsos-sissy/css/custom-theme.min.3019b5eec3220fed4f3b5e17b7e4d844b72a9672f998b5cd2e9910ced355bc6b.css" id="theme"><link rel="stylesheet" href="/presentation-2026-acsos-sissy/highlight-js/solarized-dark.min.css">
 <link href="https://fonts.googleapis.com/css?family=Roboto Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Oxygen Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Ubuntu Mono" rel="stylesheet">
@@ -27,57 +27,208 @@
 
     <section><h1 id="toward-safe-aggregate-computing">Toward <strong>Safe Aggregate Computing</strong>:</h1>
 <h1 id="a-distributed-control-theoretic-safety-filter-for-robot-swarms">A Distributed Control-Theoretic Safety Filter for Robot Swarms</h1>
-<h3 id="angela-cortecchia-alessandro-papadopoulos-danilo-pianini"><strong>Angela Cortecchia</strong>, Alessandro Papadopoulos, Danilo Pianini</h3>
-<p><span class="deck-affiliation"><small>*</small><em>Department of Computer Science and Engineering (DISI)<br>
-Alma Mater Studiorum – University of Bologna - Cesena, Italy</em></span></p>
+<p><a href="mailto:angela.cortecchia@unibo.it"><strong><span class="deck-title-accent">Angela Cortecchia</span></strong></a><small>1</small>,
+<a href="mailto:alessandro.papadopoulos@mdu.se">Alessandro Papadopoulos</a><small>2</small>,
+<a href="mailto:danilo.pianini@unibo.it">Danilo Pianini</a><small>1</small></p>
+
+
+<div style="margin-top: 4rem;"></div>
+<p><span class="deck-affiliation"><small>*1</small> Department of Computer Science and Engineering (DISI)<br>
+Alma Mater Studiorum – University of Bologna - Cesena, Italy<br></span>
+<br>
+<span class="deck-affiliation"><small>*2</small>Department of Computer Science and Engineering<br>
+Mälardalen University, Västerås, Sweden</span></p>
+
+
+<div style="margin-top: 4rem;"></div>
 <div class="hero-logo">
-  <img src="./images/dep-logo.pdf" width="60%">
+  <img src="./images/dep-logo.pdf" width="45%">
+  <img src="./images/MDU_logotyp.png" width="30%">
 </div>
 </section><section>
-<h1 id="eventual-convergence-is-not-enough">Eventual convergence is not enough</h1>
+<h1 id="programming-adaptive-robot-swarms-safely">Programming adaptive robot swarms safely</h1>
+<h3 id="collective-behavior-and-safety-are-both-required">Collective behavior and safety are both required</h3>
 
 <div class="container w-100 m-0 p-0">
     <div class="row "><div style="text-align: justify" class="col col-50"><p><img src="./images/drone_formation.svg" alt="Four drones approaching an obstacle"></p>
 </div>
-<div style="text-align: justify" class="col col-50"><p>Aggregate Computing can express resilient, self-organizing behavior.</p>
-<p>But self-stabilization is an <strong>eventual</strong> guarantee.</p>
-<p>During adaptation, robots may:</p>
+<div style="text-align: justify" class="col col-50"><p>In applications such as search and rescue or environmental monitoring, groups of robots must:</p>
 <ul>
-<li>collide with obstacles or each other;</li>
-<li>break communication links;</li>
-<li>keep adapting without ever reaching a stable regime.</li>
+<li>coordinate toward a common objective;</li>
+<li>adapt to changing conditions;</li>
+<li>remain safe while doing so.</li>
 </ul>
+<p>A collective strategy may correctly describe <strong>where the swarm should go</strong>, while still producing unsafe motion on the way.</p>
 </div>
 </div>
 </div>
-<p class="takeaway">We need constraints that hold during the transient.</p>
-<aside class="notes">
-About 55 seconds. Use the obstacle example to distinguish the software-level promise from the physical trajectory. The key transition is: the aggregate program says what should eventually happen, but does not constrain every intermediate command.
-<p>[Sources]</p>
-<ul>
-<li>Paper, Introduction, pp. 1-2.</li>
-<li>Drone illustration adapted from the original presentation assets.</li>
-</ul>
-</aside>
+<p class="takeaway">We need both an expressive way to specify collective behavior and a mechanism that enforces safety during execution.</p>
 </section><section>
-<h1 id="separate-collective-intent-from-safe-actuation">Separate collective intent from safe actuation</h1>
-<img class="paper-figure architecture" alt="Architecture of the aggregate safety filter" src="./images/architecture.svg">
-<div class="three-beats">
-  <span><b>1.</b> Aggregate program proposes <em>u<sub>nom</sub></em></span>
-  <span><b>2.</b> Safety filter computes <em>u</em></span>
-  <span><b>3.</b> Robot acts and feeds back its state</span>
+<h1 id="aggregate-computing">Aggregate Computing</h1>
+<h3 id="programming-the-collective-not-each-robot">Programming the collective, not each robot</h3>
+<div class="ac-overview">
+  <div class="ac-visual">
+    <img src="./images/acDevices.svg">
+  </div>
+  <div class="ac-copy">
+    <p>Aggregate Computing raises the programming abstraction from individual devices to <strong>collective behavior</strong>.</p>
+    <p>Developers compose <strong>computational fields</strong>: distributed values that evolve through local interaction across the network.</p>
+  </div>
 </div>
-<p class="takeaway">The safety layer minimally changes the nominal command only when constraints require it.</p>
-<aside class="notes">
-About 70 seconds. Walk left to right through the architecture. Emphasize modularity: changing the aggregate strategy does not require re-encoding every safety rule, and the filter can observe neighbors through the same communication model.
-<p>[Sources]</p>
-<ul>
-<li>Paper, Fig. 1 and Section III, pp. 3-4.</li>
-<li>Architecture artwork: paper source file images/architecture.svg.</li>
-</ul>
-</aside>
+<div class="pattern-line">
+  <span>spreading information</span>
+  <span>aggregating values</span>
+  <span>electing leaders</span>
+  <span>forming collective patterns</span>
+</div>
+<p class="takeaway">One global program is executed locally by all robots through repeated neighbor-to-neighbor interaction.</p>
 </section><section>
-<h1 id="one-filter-combines-progress-and-safety">One filter combines progress and safety</h1>
+<h1 id="how-ac-executes">How AC executes</h1>
+<h3 id="sense--compute--communicate--act">Sense → compute → communicate / act</h3>
+
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div style="text-align: justify" class="col "><div class="takeaway-editorial">
+  <p>Each robot repeatedly:</p>
+  <div class="takeaway-line">
+    <span>01</span>
+    <p><strong>Senses</strong> local inputs and the latest messages from neighbors.</p>
+  </div>
+  <div class="takeaway-line">
+    <span>02</span>
+    <p><strong>Computes</strong> the aggregate program using local state and neighbor information.</p>
+  </div>
+  <div class="takeaway-line is-critical">
+    <span>03</span>
+    <p><strong>Communicates / acts</strong> by sharing the updated state and applying the local output.</p>
+  </div>
+</div>
+</div>
+<div style="text-align: justify" class="col "><h3 id="round-based-model">Round-based model</h3>
+<div class="local-round-slide">
+  <div class="local-round-points">
+    <p><strong>Each round consists of three repeated phases:</strong></p>
+    <ol>
+      <li class="fragment" data-fragment-index="1">
+        <strong class="local-round-sense-text">Sense</strong> collect sensor inputs and incoming neighbor messages.
+      </li>
+      <li class="fragment" data-fragment-index="2">
+        <strong class="local-round-compute-text">Compute</strong> evaluate the aggregate program using local state and neighbor information.
+      </li>
+      <li class="fragment" data-fragment-index="3">
+        <strong class="local-round-interact-text">Communicate / Act</strong> share the updated state and apply the local output.
+      </li>
+    </ol>
+    <p class="fragment local-round-async" data-fragment-index="4">The model does not require global lock-step.</p>
+  </div>
+<div class="local-round-visual" style="background: transparent; background-color: transparent; box-shadow: none; border: none;">
+<div class="local-round-loop" aria-label="Local aggregate-computing round" style="background: transparent; background-color: transparent; box-shadow: none; border: none;">
+<svg viewBox="0 0 520 360" class="local-round-loop-svg" aria-hidden="true" style="background: transparent; background-color: transparent;">
+<path d="M142 110 C 212 62, 308 62, 378 110" class="local-round-arc local-round-arc-top"></path>
+<path d="M394 142 C 422 198, 416 255, 362 296" class="local-round-arc local-round-arc-right"></path>
+<path d="M160 296 C 106 255, 98 198, 126 142" class="local-round-arc local-round-arc-left"></path>
+<line x1="116" y1="180" x2="222" y2="180" class="local-round-neighbor-line local-round-neighbor-line-in"></line>
+<line x1="298" y1="180" x2="404" y2="180" class="local-round-neighbor-line local-round-neighbor-line-out"></line>
+<circle cx="148" cy="180" r="7" class="local-round-msg local-round-msg-in"></circle>
+<circle cx="372" cy="180" r="7" class="local-round-msg local-round-msg-out"></circle>
+<g class="fragment local-round-highlight local-round-highlight-sense" data-fragment-index="1">
+<path d="M160 296 C 106 255, 98 198, 126 142" class="local-round-active-arc local-round-active-sense"></path>
+<line x1="116" y1="180" x2="222" y2="180" class="local-round-active-line local-round-active-sense"></line>
+<circle cx="148" cy="180" r="7" class="local-round-active-msg local-round-active-msg-in"></circle>
+</g>
+<g class="fragment local-round-highlight local-round-highlight-interact" data-fragment-index="3">
+<path d="M394 142 C 422 198, 416 255, 362 296" class="local-round-active-arc local-round-active-interact"></path>
+<line x1="298" y1="180" x2="404" y2="180" class="local-round-active-line local-round-active-interact"></line>
+<circle cx="372" cy="180" r="7" class="local-round-active-msg local-round-active-msg-out"></circle>
+</g>
+<g class="fragment local-round-highlight-all" data-fragment-index="4">
+<path d="M142 110 C 212 62, 308 62, 378 110" class="local-round-active-arc local-round-active-compute"></path>
+<path d="M394 142 C 422 198, 416 255, 362 296" class="local-round-active-arc local-round-active-interact"></path>
+<path d="M160 296 C 106 255, 98 198, 126 142" class="local-round-active-arc local-round-active-sense"></path>
+<line x1="116" y1="180" x2="222" y2="180" class="local-round-active-line local-round-active-sense"></line>
+<line x1="298" y1="180" x2="404" y2="180" class="local-round-active-line local-round-active-interact"></line>
+<circle cx="148" cy="180" r="7" class="local-round-active-msg local-round-active-msg-in"></circle>
+<circle cx="372" cy="180" r="7" class="local-round-active-msg local-round-active-msg-out"></circle>
+</g>
+</svg>
+<div class="local-round-phase local-round-phase-sense">Sense</div>
+<div class="local-round-phase local-round-phase-compute">Compute</div>
+<div class="local-round-phase local-round-phase-interact">Interact / Act</div>
+<div class="local-round-device local-round-device-core">device</div>
+<div class="local-round-device local-round-device-neighbor local-round-device-left">nbr</div>
+<div class="local-round-device local-round-device-neighbor local-round-device-right">nbr</div>
+<div class="fragment local-round-label-highlight local-round-phase local-round-phase-sense" data-fragment-index="1">Sense</div>
+<div class="fragment local-round-label-highlight local-round-phase local-round-phase-compute" data-fragment-index="2">Compute</div>
+<div class="fragment local-round-label-highlight local-round-phase local-round-phase-interact" data-fragment-index="3">Interact / Act</div>
+<div class="fragment local-round-label-highlight-all local-round-phase local-round-phase-sense" data-fragment-index="4">Sense</div>
+<div class="fragment local-round-label-highlight-all local-round-phase local-round-phase-compute" data-fragment-index="4">Compute</div>
+<div class="fragment local-round-label-highlight-all local-round-phase local-round-phase-interact" data-fragment-index="4">Interact / Act</div>
+<div class="fragment local-round-device-highlight local-round-device local-round-device-core" data-fragment-index="2">device</div>
+<div class="fragment local-round-device-highlight-all local-round-device local-round-device-core" data-fragment-index="4">device</div>
+<div class="fragment local-round-device-highlight local-round-device local-round-device-neighbor local-round-device-left" data-fragment-index="1">nbr</div>
+<div class="fragment local-round-device-highlight local-round-device local-round-device-neighbor local-round-device-right" data-fragment-index="3">nbr</div>
+<div class="fragment local-round-device-highlight-all local-round-device local-round-device-neighbor local-round-device-left" data-fragment-index="4">nbr</div>
+<div class="fragment local-round-device-highlight-all local-round-device local-round-device-neighbor local-round-device-right" data-fragment-index="4">nbr</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p class="takeaway">Global self-organizing behavior emerges from repeated local interaction.</p>
+</div></section><section>
+<h1 id="the-limitation-self-stabilization-is-eventual">The limitation: self-stabilization is eventual</h1>
+<p>AC provides reusable coordination patterns with self-stabilizing behavior.</p>
+<p>Under stable inputs and network topology, the system can recover from transient changes and <strong>eventually</strong> converge to a stable collective state.</p>
+<p>But during that transient phase — or while the environment keeps changing — the aggregate program may continue adapting without guaranteeing that every physical constraint is respected.</p>
+<div class="pattern-line">
+  <span>obstacle collisions</span>
+  <span>inter-robot collisions</span>
+  <span>broken communication links</span>
+</div>
+<p class="takeaway">For robot swarms, eventual convergence is not enough: safety must also hold before convergence.</p>
+</section><section>
+<h1 id="the-missing-layer-safe-actuation">The missing layer: safe actuation</h1>
+
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div style="text-align: justify" class="col col-50"><h3 id="collective-level">Collective level</h3>
+<p>The aggregate program computes the intended motion:</p>
+<p>[
+u_{nom}
+]</p>
+<p>It says where the robot would like to go.</p>
+</div>
+<div style="text-align: justify" class="col col-50"><h3 id="control-level">Control level</h3>
+<p>A safety filter checks whether that command is admissible.</p>
+<p>It outputs the command actually applied:</p>
+<p>[
+u
+]</p>
+</div>
+</div>
+</div>
+<p class="takeaway">The idea is not to replace AC, but to filter its commands before actuation.</p>
+</section><section>
+<h1 id="two-control-intuitions">Two control intuitions</h1>
+
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div style="text-align: justify" class="col col-50"><h3 id="clf-progress">CLF: progress</h3>
+<p>A Control Lyapunov Function measures distance from a goal.</p>
+<p>[
+V = 0 \quad \text{at the target}
+]</p>
+<p>The controller should make (V) decrease.</p>
+</div>
+<div style="text-align: justify" class="col col-50"><h3 id="cbf-safety">CBF: safety</h3>
+<p>A Control Barrier Function defines a safe set.</p>
+<p>[
+h \ge 0 \quad \text{means safe}
+]</p>
+<p>The controller should prevent (h) from becoming negative.</p>
+</div>
+</div>
+</div>
+<p class="takeaway">CLFs encode what should happen; CBFs encode what must not happen.</p>
+</section><section>
+<h1 id="the-safety-filter">The safety filter</h1>
 <div class="formula">
 \[
 \min_{u,\,\delta \ge 0}\; \|u-u_{nom}\|^2 + \rho\delta^2
@@ -89,67 +240,49 @@ About 70 seconds. Walk left to right through the architecture. Emphasize modular
 \end{aligned}
 \]
 </div>
-
-<div class="container w-100 m-0 p-0">
-    <div class="row "><div style="text-align: justify" class="col col-50"><h3 id="clf-what-should-happen">CLF: what should happen</h3>
-<p>Drive each robot toward its current target.</p>
-</div>
-<div style="text-align: justify" class="col col-50"><h3 id="cbf-what-must-not-happen">CBF: what must not happen</h3>
-<p>Keep every active safety function non-negative.</p>
-</div>
-</div>
-</div>
-<p class="takeaway">Safety has priority; progress may temporarily slow down.</p>
-<aside class="notes">
-About 75 seconds. Avoid deriving Lie derivatives. Explain the objective as staying close to the Aggregate Computing command. The slack is only on the CLF; the CBFs remain hard. Qualify the guarantee: active hard constraints must be jointly feasible.
-<p>[Sources]</p>
-<ul>
-<li>Paper, Safety Filter, Eq. 6, p. 3.</li>
-<li>Paper, Background on CLFs and CBFs, pp. 2-3.</li>
-</ul>
-</aside>
+<p class="takeaway">Stay as close as possible to the aggregate command, but never violate active hard safety constraints.</p>
 </section><section>
-<h1 id="pairwise-constraints-make-the-filter-distributed">Pairwise constraints make the filter distributed</h1>
+<h1 id="proposed-architecture">Proposed architecture</h1>
+<img class="paper-figure architecture" alt="Architecture of the aggregate safety filter" src="./images/architecture.svg">
+<div class="three-beats">
+  <span><b>1.</b> AC computes <em>u<sub>nom</sub></em></span>
+  <span><b>2.</b> CLF/CBF filter computes <em>u</em></span>
+  <span><b>3.</b> Robot acts and feeds back its state</span>
+</div>
+<p class="takeaway">Collective strategy and physical safety are kept modular.</p>
+</section><section>
+<h1 id="distributed-safety-constraints">Distributed safety constraints</h1>
 <img class="paper-figure device-view" alt="Device-wise view of local and pairwise quadratic programs" src="./images/architecture2.svg">
 
 <div class="container w-100 m-0 p-0">
-    <div class="row "><div style="text-align: justify" class="col col-50"><h3 id="local-qp">Local QP</h3>
-<p>Target convergence, obstacle clearance, speed limits.</p>
-</div>
-<div style="text-align: justify" class="col col-50"><h3 id="pairwise-qp">Pairwise QP</h3>
-<p>Collision avoidance and selected communication links.</p>
-</div>
-</div>
-</div>
-<p class="takeaway">ADMM decomposes the coupled problem into neighbor-to-neighbor subproblems.</p>
-<aside class="notes">
-About 70 seconds. Explain why some constraints are local and others couple two robots. Each device runs asynchronously with its latest neighbor information; pairwise variables are coordinated through ADMM rather than a central controller.
-<p>[Sources]</p>
+    <div class="row "><div style="text-align: justify" class="col col-50"><h3 id="local-constraints">Local constraints</h3>
 <ul>
-<li>Paper, Fig. 2 and Section III, pp. 3-4.</li>
-<li>Paper, Optimization problem and distributed solution, p. 5.</li>
-<li>Architecture artwork: paper source file images/architecture2.svg.</li>
+<li>target convergence;</li>
+<li>obstacle clearance;</li>
+<li>speed limits.</li>
 </ul>
-</aside>
+</div>
+<div style="text-align: justify" class="col col-50"><h3 id="pairwise-constraints">Pairwise constraints</h3>
+<ul>
+<li>inter-robot collision avoidance;</li>
+<li>selected communication-link preservation.</li>
+</ul>
+</div>
+</div>
+</div>
+<p class="takeaway">Pairwise constraints expose the distributed structure of the problem.</p>
 </section><section>
-<h1 id="the-specification-covers-five-requirements">The specification covers five requirements</h1>
+<h1 id="what-is-enforced">What is enforced?</h1>
 <div class="constraint-list">
   <div><b>Reach the target</b><span>CLF on squared target distance</span></div>
   <div><b>Avoid obstacles</b><span>CBF outside obstacle clearance</span></div>
   <div><b>Avoid collisions</b><span>CBF above minimum robot separation</span></div>
-  <div><b>Preserve connectivity</b><span>CBF below the selected link range</span></div>
+  <div><b>Preserve connectivity</b><span>CBF below selected communication range</span></div>
   <div><b>Respect speed limits</b><span>Bound on the control input</span></div>
 </div>
-<p class="takeaway">Each experiment activates the subset of constraints required by its collective task.</p>
-<aside class="notes">
-About 55 seconds. This replaces the long theory section. Point out the symmetry: collision avoidance imposes a lower distance bound, while connectivity preservation imposes an upper distance bound on selected links.
-<p>[Sources]</p>
-<ul>
-<li>Paper, Section IV-B, Eqs. 8-12, pp. 4-5.</li>
-</ul>
-</aside>
+<p class="takeaway">The active constraints depend on the collective task being executed.</p>
 </section><section>
-<h1 id="proof-of-concept-four-robots">Proof of concept: four robots</h1>
+<h1 id="proof-of-concept">Proof of concept</h1>
 <div class="metrics">
   <div><strong>4</strong><span>robots in 2D</span></div>
   <div><strong>2 m</strong><span>minimum separation</span></div>
@@ -157,68 +290,34 @@ About 55 seconds. This replaces the long theory section. Point out the symmetry:
   <div><strong>2 m/s</strong><span>maximum speed</span></div>
 </div>
 <p class="experiment-stack"><b>Collektive</b> specifies the aggregate behavior &nbsp;→&nbsp; <b>Alchemist</b> simulates the swarm &nbsp;→&nbsp; <b>Gurobi</b> solves the QPs</p>
-<p class="small-center">Static obstacles use radius 2 m plus a 1.5 m safety margin. Robots sense targets and obstacles locally, and exchange information only with neighbors.</p>
-<aside class="notes">
-About 55 seconds. Clarify that this is a proof of concept, not yet a scalability benchmark. The robot model is a 2D single integrator: the control input directly specifies velocity.
-<p>[Sources]</p>
-<ul>
-<li>Paper, Section IV-A, p. 4.</li>
-<li>Paper, implementation details, p. 4.</li>
-</ul>
-</aside>
+<p class="small-center">This is a proof of concept: the goal is to validate the architecture, not yet to provide a scalability benchmark.</p>
 </section><section>
-<h1 id="different-goals-shared-safety-constraints">Different goals, shared safety constraints</h1>
+<h1 id="scenario-1-different-targets">Scenario 1: different targets</h1>
 <img class="simulation" alt="Animated simulation of robots reaching two different targets" src="./images/different-targets.gif">
-<p class="takeaway">Both groups reach their targets while preserving robot separation and obstacle clearance.</p>
-<aside class="notes">
-About 75 seconds. Let the animation run. Robots 0 and 1 go to one target; robots 2 and 3 go to the other. The nominal commands differ, but all robots share the same collision and obstacle constraints.
-<p>[Sources]</p>
-<ul>
-<li>Paper, Section IV-C.1 and Fig. 3, p. 5.</li>
-<li>Reproducible experiment asset: experiments-2026-acsos-ws-carol/charts/gifs/different-targets/different-targets.gif.</li>
-</ul>
-</aside>
+<p class="takeaway">Different nominal goals, shared safety constraints: robots reach their targets while avoiding obstacles and collisions.</p>
 </section><section>
-<h1 id="the-collective-strategy-adapts-while-links-stay-safe">The collective strategy adapts while links stay safe</h1>
+<h1 id="scenario-2-leader-election-and-connectivity">Scenario 2: leader election and connectivity</h1>
 <img class="simulation" alt="Animated leader-election and connectivity-preservation simulation" src="./images/follow-leader.gif">
-<p class="takeaway">Two clusters merge, elect a common leader, then navigate around the obstacle without breaking preserved links.</p>
-<aside class="notes">
-About 85 seconds. The yellow ring marks the current leader. Before the clusters meet they may follow different leaders. When they merge, the aggregate program elects the highest-ID leader. The safety filter first pulls robots inside the communication margin, then allows progress toward the target.
-<p>[Sources]</p>
-<ul>
-<li>Paper, Section IV-C.2 and Fig. 4, p. 5.</li>
-<li>Reproducible experiment asset: experiments-2026-acsos-ws-carol/charts/gifs/follow-leader/follow-leader.gif.</li>
-</ul>
-</aside>
+<p class="takeaway">The aggregate strategy adapts when clusters merge, while the safety filter preserves selected communication links.</p>
 </section><section>
-<h1 id="safety-can-expose-a-strategy-level-dead-end">Safety can expose a strategy-level dead end</h1>
+<h1 id="scenario-3-when-safety-reveals-a-strategy-limit">Scenario 3: when safety reveals a strategy limit</h1>
 <img class="simulation" alt="Animated simulation with multiple obstacles and a local minimum" src="./images/multiple-obstacles.gif">
-<p class="takeaway">The filter correctly blocks unsafe motion, but a direct target policy can become trapped in a local minimum.</p>
-<p class="next-step">The Aggregate Computing layer can detect slow progress and switch target, waypoint, or exploration policy.</p>
-<aside class="notes">
-About 70 seconds. This is the honest limitation and the reason for the monitoring loop in the architecture. The safety filter is doing its job: it should not invent a global path. Strategy adaptation is future work, not an implemented result in this paper.
-<p>[Sources]</p>
-<ul>
-<li>Paper, Section IV-C.3 and Fig. 5, pp. 5-6.</li>
-<li>Reproducible experiment asset: experiments-2026-acsos-ws-carol/charts/gifs/multiple-obstacles/multiple-obstacles.gif.</li>
-</ul>
-</aside>
+<p class="takeaway">The filter correctly blocks unsafe motion, but a direct target policy can get trapped in a local minimum.</p>
+<p class="next-step">This motivates runtime strategy adaptation in the AC layer: switch target, waypoint, or exploration policy.</p>
 </section><section>
-<h1 id="what-this-work-establishes">What this work establishes</h1>
+<h1 id="takeaways">Takeaways</h1>
 <div class="closing">
-  <p><b>Aggregate Computing</b> remains the high-level language for adaptive collective behavior.</p>
-  <p><b>CLF/CBF filtering</b> makes convergence and safety requirements explicit before actuation.</p>
-  <p><b>Distributed optimization</b> handles local and pairwise constraints through neighbor exchanges.</p>
+  <p><b>Aggregate Computing</b> gives a high-level language for adaptive collective behavior.</p>
+  <p><b>CLF/CBF filtering</b> turns progress and safety requirements into constraints before actuation.</p>
+  <p><b>Distributed optimization</b> exploits local and pairwise structure through neighbor exchanges.</p>
 </div>
-<p class="takeaway final">A programmable swarm can adapt without treating transient safety as an afterthought.</p>
-<p class="future">Next: quantitative scalability and overhead, richer swarm behaviors, and runtime strategy changes.</p>
-<aside class="notes">
-About 60 seconds, leaving roughly one minute of margin in a 12-minute slot. Close by returning to the opening tension: eventual convergence and instantaneous safety are different properties, and the architecture gives them distinct but composable mechanisms. Invite questions on feasibility under delay/asynchrony, ADMM convergence, and strategy adaptation.
-<p>[Sources]</p>
-<ul>
-<li>Paper, Conclusions and Future Work, p. 6.</li>
-</ul>
-</aside>
+<p class="takeaway final">Safe Aggregate Computing means keeping self-organization programmable without treating transient safety as an afterthought.</p>
+<p class="future">Next: scalability, communication overhead, richer swarm behaviors, and runtime strategy changes.</p>
+</section><section>
+<h1 id="thank-you-for-the-attention">Thank you for the attention!</h1>
+<p>Reproducible experiments here:</p>
+<p><img src="images/qr.png" alt="qr.png"></p>
+<p>angelacorte/experiments-2026-acsos-ws-carol</p>
 </section>
 
   
