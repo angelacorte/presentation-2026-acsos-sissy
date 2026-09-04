@@ -40,6 +40,15 @@
      showguides="false" />
   <defs
      id="defs1">
+    <style type="text/css"><![CDATA[
+      @font-face {
+        font-family: 'Fira Math';
+        src: url('../fonts/FiraMath-Regular.otf') format('opentype');
+        font-weight: normal;
+        font-style: normal;
+      }
+      text, tspan { font-family: 'Fira Math' !important; }
+    ]]></style>
     <inkscape:path-effect
        effect="fillet_chamfer"
        id="path-effect64"

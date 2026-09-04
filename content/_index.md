@@ -24,14 +24,14 @@ Mälardalen University, Västerås, Sweden</span>
 {{% spacer %}}
 
 <div class="hero-logo">
-  <img src="./images/dep-logo.pdf" width="45%">
+  <img src="./images/dep-logo.png" width="45%">
   <img src="./images/MDU_logotyp.png" width="30%">
 </div>
 
 ---
 
-# Programming adaptive robot swarms safely
-### Collective behavior and safety are both required
+# Safe adaptation in robot swarms
+### Collective strategies must respect physical constraints during execution
 
 {{% multicol %}}
 {{% col class="col-50" %}}
@@ -111,22 +111,6 @@ A collective strategy may correctly describe <strong>where the swarm should go</
 ### Round-based model
 
 <div class="local-round-slide">
-  <div class="local-round-points">
-    <p><strong>Each round consists of three repeated phases:</strong></p>
-    <ol>
-      <li class="fragment" data-fragment-index="1">
-        <strong class="local-round-sense-text">Sense</strong> collect sensor inputs and incoming neighbor messages.
-      </li>
-      <li class="fragment" data-fragment-index="2">
-        <strong class="local-round-compute-text">Compute</strong> evaluate the aggregate program using local state and neighbor information.
-      </li>
-      <li class="fragment" data-fragment-index="3">
-        <strong class="local-round-interact-text">Communicate / Act</strong> share the updated state and apply the local output.
-      </li>
-    </ol>
-    <p class="fragment local-round-async" data-fragment-index="4">The model does not require global lock-step.</p>
-  </div>
-
 {{< local-round-loop >}}
 
 {{% /col %}}
@@ -163,11 +147,13 @@ But during that transient phase — or while the environment keeps changing — 
 
 The aggregate program computes the intended motion:
 
+It says where the robot would like to go.
+
+<div class="compact-equation">
 \[
 u_{nom}
 \]
-
-It says where the robot would like to go.
+</div>
 
 {{% /col %}}
 {{% col class="col-50" %}}
@@ -178,9 +164,11 @@ A safety filter checks whether that command is admissible.
 
 It outputs the command actually applied:
 
+<div class="compact-equation">
 \[
 u
 \]
+</div>
 
 {{% /col %}}
 {{% /multicol %}}
@@ -189,7 +177,7 @@ u
 
 ---
 
-# Two control intuitions
+# Control functions for convergence and safety
 
 {{% multicol %}}
 {{% col class="col-50" %}}
@@ -198,11 +186,13 @@ u
 
 A Control Lyapunov Function measures distance from a goal.
 
+<div class="compact-equation">
 \[
 V = 0 \quad \text{at the target}
 \]
+</div>
 
-The controller should make \(V\) decrease.
+The controller should make <em>V</em> decrease.
 
 {{% /col %}}
 {{% col class="col-50" %}}
@@ -211,11 +201,13 @@ The controller should make \(V\) decrease.
 
 A Control Barrier Function defines a safe set.
 
+<div class="compact-equation">
 \[
 h \ge 0 \quad \text{means safe}
 \]
+</div>
 
-The controller should prevent \(h\) from becoming negative.
+The controller should prevent <em>h</em> from becoming negative.
 
 {{% /col %}}
 {{% /multicol %}}
@@ -244,7 +236,7 @@ The controller should prevent \(h\) from becoming negative.
 
 # Proposed architecture
 
-<img class="paper-figure architecture" alt="Architecture of the aggregate safety filter" src="./images/architecture.svg" />
+<img class="paper-figure architecture" alt="Architecture of the aggregate safety filter" src="./images/architecture.pdf" />
 
 <div class="three-beats">
   <span><b>1.</b> AC computes <em>u<sub>nom</sub></em></span>
@@ -258,7 +250,7 @@ The controller should prevent \(h\) from becoming negative.
 
 # Distributed safety constraints
 
-<img class="paper-figure device-view" alt="Device-wise view of local and pairwise quadratic programs" src="./images/architecture2.svg" />
+<img class="paper-figure device-view" alt="Device-wise view of local and pairwise quadratic programs" src="./images/architecture2.pdf" />
 
 {{% multicol %}}
 {{% col class="col-50" %}}
@@ -315,7 +307,7 @@ The controller should prevent \(h\) from becoming negative.
 
 # Scenario 1: different targets
 
-<img class="simulation" alt="Animated simulation of robots reaching two different targets" src="./images/different-targets.gif" />
+<img class="simulation" alt="Animated simulation of robots reaching two different targets" src="./images/different-targets-amber.gif" />
 
 <p class="takeaway">Different nominal goals, shared safety constraints: robots reach their targets while avoiding obstacles and collisions.</p>
 
@@ -323,7 +315,7 @@ The controller should prevent \(h\) from becoming negative.
 
 # Scenario 2: leader election and connectivity
 
-<img class="simulation" alt="Animated leader-election and connectivity-preservation simulation" src="./images/follow-leader.gif" />
+<img class="simulation" alt="Animated leader-election and connectivity-preservation simulation" src="./images/follow-leader-amber.gif" />
 
 <p class="takeaway">The aggregate strategy adapts when clusters merge, while the safety filter preserves selected communication links.</p>
 
@@ -331,7 +323,7 @@ The controller should prevent \(h\) from becoming negative.
 
 # Scenario 3: when safety reveals a strategy limit
 
-<img class="simulation" alt="Animated simulation with multiple obstacles and a local minimum" src="./images/multiple-obstacles.gif" />
+<img class="simulation" alt="Animated simulation with multiple obstacles and a local minimum" src="./images/multiple-obstacles-amber.gif" />
 
 <p class="takeaway">The filter correctly blocks unsafe motion, but a direct target policy can get trapped in a local minimum.</p>
 
@@ -339,17 +331,43 @@ The controller should prevent \(h\) from becoming negative.
 
 ---
 
-# Takeaways
+# Conclusions and future work
 
-<div class="closing">
-  <p><b>Aggregate Computing</b> gives a high-level language for adaptive collective behavior.</p>
-  <p><b>CLF/CBF filtering</b> turns progress and safety requirements into constraints before actuation.</p>
-  <p><b>Distributed optimization</b> exploits local and pairwise structure through neighbor exchanges.</p>
+<div class="closing-layout">
+  <div class="takeaway-editorial">
+    <h2>Takeaways</h2>
+    <div class="takeaway-line">
+      <span>01</span>
+      <p><strong>Aggregate Computing</strong> specifies adaptive collective behavior at a high level.</p>
+    </div>
+    <div class="takeaway-line">
+      <span>02</span>
+      <p><strong>CLF/CBF filtering</strong> makes convergence and safety requirements explicit before actuation.</p>
+    </div>
+    <div class="takeaway-line">
+      <span>03</span>
+      <p><strong>Distributed optimization</strong> exploits local and pairwise structure through neighbor exchanges.</p>
+    </div>
+  </div>
+
+  <div class="future-panel">
+    <h2>Future work</h2>
+    <div class="future-group">
+      <h3>Quantitative evaluation</h3>
+      <p>Measure convergence time, scalability, and communication overhead.</p>
+    </div>
+    <div class="future-group">
+      <h3>Complex collective behaviors</h3>
+      <p>Explore formation control, flocking, and coverage.</p>
+    </div>
+    <div class="future-group">
+      <h3>Dynamic policies for target convergence</h3>
+      <p>Handle local minima and improve adaptability in complex environments.</p>
+    </div>
+  </div>
 </div>
 
-<p class="takeaway final">Safe Aggregate Computing means keeping self-organization programmable without treating transient safety as an afterthought.</p>
-
-<p class="future">Next: scalability, communication overhead, richer swarm behaviors, and runtime strategy changes.</p>
+<p class="takeaway final closing-statement">Safe Aggregate Computing keeps self-organization programmable while enforcing transient safety.</p>
 
 ---
 
