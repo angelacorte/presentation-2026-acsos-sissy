@@ -32,7 +32,17 @@
      inkscape:window-y="0"
      inkscape:window-maximized="0"
      inkscape:current-layer="g261" /><defs
-     id="defs1"><linearGradient
+     id="defs1">
+    <style type="text/css"><![CDATA[
+      @font-face {
+        font-family: 'Fira Math';
+        src: url('../fonts/FiraMath-Regular.otf') format('opentype');
+        font-weight: normal;
+        font-style: normal;
+      }
+      text, tspan { font-family: 'Fira Math' !important; }
+    ]]></style>
+    <linearGradient
        id="swatch404"><stop
          style="stop-color:#124e78;stop-opacity:1;"
          offset="0"

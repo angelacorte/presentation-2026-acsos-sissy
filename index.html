@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/presentation-2026-acsos-sissy/reveal-js/dist/reset.css">
 <link rel="stylesheet" href="/presentation-2026-acsos-sissy/reveal-js/dist/reveal.css">
-  <link rel="stylesheet" href="/presentation-2026-acsos-sissy/css/custom-theme.min.3019b5eec3220fed4f3b5e17b7e4d844b72a9672f998b5cd2e9910ced355bc6b.css" id="theme"><link rel="stylesheet" href="/presentation-2026-acsos-sissy/highlight-js/solarized-dark.min.css">
+  <link rel="stylesheet" href="/presentation-2026-acsos-sissy/css/custom-theme.min.388272a752bc3f7331b4ca9b59947bbc3f1ce50d5cac04be5b87c08b517967cc.css" id="theme"><link rel="stylesheet" href="/presentation-2026-acsos-sissy/highlight-js/solarized-dark.min.css">
 <link href="https://fonts.googleapis.com/css?family=Roboto Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Oxygen Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Ubuntu Mono" rel="stylesheet">
@@ -42,12 +42,12 @@ Mälardalen University, Västerås, Sweden</span></p>
 
 <div style="margin-top: 4rem;"></div>
 <div class="hero-logo">
-  <img src="./images/dep-logo.pdf" width="45%">
+  <img src="./images/dep-logo.png" width="45%">
   <img src="./images/MDU_logotyp.png" width="30%">
 </div>
 </section><section>
-<h1 id="programming-adaptive-robot-swarms-safely">Programming adaptive robot swarms safely</h1>
-<h3 id="collective-behavior-and-safety-are-both-required">Collective behavior and safety are both required</h3>
+<h1 id="safe-adaptation-in-robot-swarms">Safe adaptation in robot swarms</h1>
+<h3 id="collective-strategies-must-respect-physical-constraints-during-execution">Collective strategies must respect physical constraints during execution</h3>
 
 <div class="container w-100 m-0 p-0">
     <div class="row "><div style="text-align: justify" class="col col-50"><p><img src="./images/drone_formation.svg" alt="Four drones approaching an obstacle"></p>
@@ -105,21 +105,6 @@ Mälardalen University, Västerås, Sweden</span></p>
 </div>
 <div style="text-align: justify" class="col "><h3 id="round-based-model">Round-based model</h3>
 <div class="local-round-slide">
-  <div class="local-round-points">
-    <p><strong>Each round consists of three repeated phases:</strong></p>
-    <ol>
-      <li class="fragment" data-fragment-index="1">
-        <strong class="local-round-sense-text">Sense</strong> collect sensor inputs and incoming neighbor messages.
-      </li>
-      <li class="fragment" data-fragment-index="2">
-        <strong class="local-round-compute-text">Compute</strong> evaluate the aggregate program using local state and neighbor information.
-      </li>
-      <li class="fragment" data-fragment-index="3">
-        <strong class="local-round-interact-text">Communicate / Act</strong> share the updated state and apply the local output.
-      </li>
-    </ol>
-    <p class="fragment local-round-async" data-fragment-index="4">The model does not require global lock-step.</p>
-  </div>
 <div class="local-round-visual" style="background: transparent; background-color: transparent; box-shadow: none; border: none;">
 <div class="local-round-loop" aria-label="Local aggregate-computing round" style="background: transparent; background-color: transparent; box-shadow: none; border: none;">
 <svg viewBox="0 0 520 360" class="local-round-loop-svg" aria-hidden="true" style="background: transparent; background-color: transparent;">
@@ -191,38 +176,46 @@ Mälardalen University, Västerås, Sweden</span></p>
 <div class="container w-100 m-0 p-0">
     <div class="row "><div style="text-align: justify" class="col col-50"><h3 id="collective-level">Collective level</h3>
 <p>The aggregate program computes the intended motion:</p>
-<p>[
-u_{nom}
-]</p>
 <p>It says where the robot would like to go.</p>
+<div class="compact-equation">
+\[
+u_{nom}
+\]
+</div>
 </div>
 <div style="text-align: justify" class="col col-50"><h3 id="control-level">Control level</h3>
 <p>A safety filter checks whether that command is admissible.</p>
 <p>It outputs the command actually applied:</p>
-<p>[
+<div class="compact-equation">
+\[
 u
-]</p>
+\]
+</div>
 </div>
 </div>
 </div>
 <p class="takeaway">The idea is not to replace AC, but to filter its commands before actuation.</p>
 </section><section>
-<h1 id="two-control-intuitions">Two control intuitions</h1>
+<h1 id="control-functions-for-convergence-and-safety">Control functions for convergence and safety</h1>
 
 <div class="container w-100 m-0 p-0">
     <div class="row "><div style="text-align: justify" class="col col-50"><h3 id="clf-progress">CLF: progress</h3>
 <p>A Control Lyapunov Function measures distance from a goal.</p>
-<p>[
+<div class="compact-equation">
+\[
 V = 0 \quad \text{at the target}
-]</p>
-<p>The controller should make (V) decrease.</p>
+\]
+</div>
+<p>The controller should make <em>V</em> decrease.</p>
 </div>
 <div style="text-align: justify" class="col col-50"><h3 id="cbf-safety">CBF: safety</h3>
 <p>A Control Barrier Function defines a safe set.</p>
-<p>[
+<div class="compact-equation">
+\[
 h \ge 0 \quad \text{means safe}
-]</p>
-<p>The controller should prevent (h) from becoming negative.</p>
+\]
+</div>
+<p>The controller should prevent <em>h</em> from becoming negative.</p>
 </div>
 </div>
 </div>
@@ -243,7 +236,7 @@ h \ge 0 \quad \text{means safe}
 <p class="takeaway">Stay as close as possible to the aggregate command, but never violate active hard safety constraints.</p>
 </section><section>
 <h1 id="proposed-architecture">Proposed architecture</h1>
-<img class="paper-figure architecture" alt="Architecture of the aggregate safety filter" src="./images/architecture.svg">
+<img class="paper-figure architecture" alt="Architecture of the aggregate safety filter" src="./images/architecture.pdf">
 <div class="three-beats">
   <span><b>1.</b> AC computes <em>u<sub>nom</sub></em></span>
   <span><b>2.</b> CLF/CBF filter computes <em>u</em></span>
@@ -252,7 +245,7 @@ h \ge 0 \quad \text{means safe}
 <p class="takeaway">Collective strategy and physical safety are kept modular.</p>
 </section><section>
 <h1 id="distributed-safety-constraints">Distributed safety constraints</h1>
-<img class="paper-figure device-view" alt="Device-wise view of local and pairwise quadratic programs" src="./images/architecture2.svg">
+<img class="paper-figure device-view" alt="Device-wise view of local and pairwise quadratic programs" src="./images/architecture2.pdf">
 
 <div class="container w-100 m-0 p-0">
     <div class="row "><div style="text-align: justify" class="col col-50"><h3 id="local-constraints">Local constraints</h3>
@@ -293,26 +286,52 @@ h \ge 0 \quad \text{means safe}
 <p class="small-center">This is a proof of concept: the goal is to validate the architecture, not yet to provide a scalability benchmark.</p>
 </section><section>
 <h1 id="scenario-1-different-targets">Scenario 1: different targets</h1>
-<img class="simulation" alt="Animated simulation of robots reaching two different targets" src="./images/different-targets.gif">
+<img class="simulation" alt="Animated simulation of robots reaching two different targets" src="./images/different-targets-amber.gif">
 <p class="takeaway">Different nominal goals, shared safety constraints: robots reach their targets while avoiding obstacles and collisions.</p>
 </section><section>
 <h1 id="scenario-2-leader-election-and-connectivity">Scenario 2: leader election and connectivity</h1>
-<img class="simulation" alt="Animated leader-election and connectivity-preservation simulation" src="./images/follow-leader.gif">
+<img class="simulation" alt="Animated leader-election and connectivity-preservation simulation" src="./images/follow-leader-amber.gif">
 <p class="takeaway">The aggregate strategy adapts when clusters merge, while the safety filter preserves selected communication links.</p>
 </section><section>
 <h1 id="scenario-3-when-safety-reveals-a-strategy-limit">Scenario 3: when safety reveals a strategy limit</h1>
-<img class="simulation" alt="Animated simulation with multiple obstacles and a local minimum" src="./images/multiple-obstacles.gif">
+<img class="simulation" alt="Animated simulation with multiple obstacles and a local minimum" src="./images/multiple-obstacles-amber.gif">
 <p class="takeaway">The filter correctly blocks unsafe motion, but a direct target policy can get trapped in a local minimum.</p>
 <p class="next-step">This motivates runtime strategy adaptation in the AC layer: switch target, waypoint, or exploration policy.</p>
 </section><section>
-<h1 id="takeaways">Takeaways</h1>
-<div class="closing">
-  <p><b>Aggregate Computing</b> gives a high-level language for adaptive collective behavior.</p>
-  <p><b>CLF/CBF filtering</b> turns progress and safety requirements into constraints before actuation.</p>
-  <p><b>Distributed optimization</b> exploits local and pairwise structure through neighbor exchanges.</p>
+<h1 id="conclusions-and-future-work">Conclusions and future work</h1>
+<div class="closing-layout">
+  <div class="takeaway-editorial">
+    <h2>Takeaways</h2>
+    <div class="takeaway-line">
+      <span>01</span>
+      <p><strong>Aggregate Computing</strong> specifies adaptive collective behavior at a high level.</p>
+    </div>
+    <div class="takeaway-line">
+      <span>02</span>
+      <p><strong>CLF/CBF filtering</strong> makes convergence and safety requirements explicit before actuation.</p>
+    </div>
+    <div class="takeaway-line">
+      <span>03</span>
+      <p><strong>Distributed optimization</strong> exploits local and pairwise structure through neighbor exchanges.</p>
+    </div>
+  </div>
+  <div class="future-panel">
+    <h2>Future work</h2>
+    <div class="future-group">
+      <h3>Quantitative evaluation</h3>
+      <p>Measure convergence time, scalability, and communication overhead.</p>
+    </div>
+    <div class="future-group">
+      <h3>Complex collective behaviors</h3>
+      <p>Explore formation control, flocking, and coverage.</p>
+    </div>
+    <div class="future-group">
+      <h3>Dynamic policies for target convergence</h3>
+      <p>Handle local minima and improve adaptability in complex environments.</p>
+    </div>
+  </div>
 </div>
-<p class="takeaway final">Safe Aggregate Computing means keeping self-organization programmable without treating transient safety as an afterthought.</p>
-<p class="future">Next: scalability, communication overhead, richer swarm behaviors, and runtime strategy changes.</p>
+<p class="takeaway final closing-statement">Safe Aggregate Computing keeps self-organization programmable while enforcing transient safety.</p>
 </section><section>
 <h1 id="thank-you-for-the-attention">Thank you for the attention!</h1>
 <p>Reproducible experiments here:</p>
