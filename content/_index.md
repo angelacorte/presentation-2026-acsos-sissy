@@ -24,7 +24,7 @@ Mälardalen University, Västerås, Sweden</span>
 {{% spacer %}}
 
 <div class="hero-logo">
-  <img src="./images/dep-logo.png" width="45%">
+  <img src="./images/DIP INFORMATICA-SCIENZA E INGEGNERIA_DISI_EN.svg" width="45%">
   <img src="./images/MDU_logotyp.png" width="30%">
 </div>
 
@@ -137,13 +137,22 @@ A collective strategy may correctly describe <strong>where the swarm should go</
 </video>
 
 {{% /col %}}
-{{% col class="col-50" %}}
+{{% col class="col-50 col-middle" %}}
 
-AC provides reusable coordination patterns with **self-stabilizing** behavior.
-
-Under stable inputs and network topology, the system recovers from transient changes and **eventually** converges to a stable collective state.
-
-But during that transient phase — or while the environment keeps changing — the aggregate program may continue adapting without guaranteeing that every physical constraint is respected.
+<div class="takeaway-editorial">
+  <div class="takeaway-line">
+    <span>01</span>
+    <p>AC building blocks are <strong>self-stabilizing</strong>: under stable inputs and topology, the swarm recovers from transient faults.</p>
+  </div>
+  <div class="takeaway-line">
+    <span>02</span>
+    <p>But the guarantee is <strong>eventual</strong> &mdash; a stable state is reached after an <em>indefinite</em> number of rounds.</p>
+  </div>
+  <div class="takeaway-line is-critical">
+    <span>03</span>
+    <p>Meanwhile the program keeps adapting, with <strong>nothing enforcing physical constraints</strong> at every instant.</p>
+  </div>
+</div>
 
 {{% /col %}}
 {{% /multicol %}}
@@ -159,80 +168,87 @@ But during that transient phase — or while the environment keeps changing — 
 ---
 
 # The missing layer: safe actuation
+### The aggregate command is filtered, not replaced
 
-{{% multicol %}}
-{{% col class="col-50" %}}
-
-### Collective level
-
-The aggregate program computes the intended motion:
-
-It says where the robot would like to go.
-
-<div class="compact-equation">
-\[
-u_{nom}
-\]
+<div class="flow">
+  <div class="flow-stage">
+    <span class="flow-kicker">Collective level</span>
+    <strong>Aggregate program</strong>
+    <p>Computes the intended motion: where the robot <em>would like</em> to go.</p>
+  </div>
+  <div class="flow-link">
+    <span class="flow-symbol"><em>u<sub>nom</sub></em></span>
+    <span class="flow-arrow">&#10230;</span>
+  </div>
+  <div class="flow-stage is-filter">
+    <span class="flow-kicker">Control level</span>
+    <strong>Safety filter</strong>
+    <p>Checks whether that command is admissible, and minimally corrects it.</p>
+  </div>
+  <div class="flow-link">
+    <span class="flow-symbol"><em>u</em></span>
+    <span class="flow-arrow">&#10230;</span>
+  </div>
+  <div class="flow-stage is-robot">
+    <span class="flow-kicker">Actuation</span>
+    <strong>Robot</strong>
+    <p>Applies the safe command; the resulting state is sensed again.</p>
+  </div>
 </div>
 
-{{% /col %}}
-{{% col class="col-50" %}}
-
-### Control level
-
-A safety filter checks whether that command is admissible.
-
-It outputs the command actually applied:
-
-<div class="compact-equation">
-\[
-u
-\]
-</div>
-
-{{% /col %}}
-{{% /multicol %}}
+<div class="flow-feedback"><span>robot state fed back to both layers</span></div>
 
 <p class="takeaway">The idea is not to replace AC, but to filter its commands before actuation.</p>
 
 ---
 
 # Control functions for convergence and safety
+### Two scalar functions: one for progress, one for safety
 
-{{% multicol %}}
-{{% col class="col-50" %}}
-
-### CLF: progress
-
-A Control Lyapunov Function measures distance from a goal.
-
-<div class="compact-equation">
-\[
-V = 0 \quad \text{at the target}
-\]
+<div class="framework-grid is-two ctrl-grid">
+  <div class="framework-card is-azure">
+    <div class="framework-card-title">CLF &mdash; what <em>should</em> happen</div>
+    <div class="framework-card-body">
+      <svg class="ctrl-sketch" viewBox="0 0 260 116" role="img" aria-label="A trajectory descending a bowl toward the target where V is zero">
+        <path d="M 20 16 Q 130 150 240 16" fill="none" stroke="#1668b2" stroke-width="2.4" stroke-linecap="round"/>
+        <line x1="16" y1="88" x2="244" y2="88" stroke="#1668b2" stroke-width="1.4" stroke-dasharray="5 5" opacity="0.5"/>
+        <circle cx="64" cy="60" r="6.5" fill="#1668b2"/>
+        <path d="M 84 72 q 20 11 44 15" fill="none" stroke="#0b1f33" stroke-width="2" stroke-linecap="round" marker-end="url(#clfArrow)"/>
+        <defs>
+          <marker id="clfArrow" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto">
+            <path d="M 0 0 L 6 3 L 0 6 z" fill="#0b1f33"/>
+          </marker>
+        </defs>
+        <text x="130" y="104" text-anchor="middle" fill="#1668b2">V = 0 at the target</text>
+      </svg>
+      <p><strong>V</strong> measures the distance from the goal: zero on the target, positive everywhere else.</p>
+      <div class="card-equation">\[\dot V \le -cV\]</div>
+      <p class="card-note">Forcing V to decrease exponentially drives the state to the target.</p>
+    </div>
+  </div>
+  <div class="framework-card is-red">
+    <div class="framework-card-title">CBF &mdash; what must <em>not</em> happen</div>
+    <div class="framework-card-body">
+      <svg class="ctrl-sketch" viewBox="0 0 260 116" role="img" aria-label="A trajectory deflected along the boundary of the safe set">
+        <path d="M 46 96 C 22 56 58 16 122 18 C 190 20 240 52 226 84 C 214 108 76 116 46 96 Z" fill="#d97706" fill-opacity="0.13" stroke="#d97706" stroke-width="2.4"/>
+        <path d="M 74 86 C 120 90 178 84 200 66 C 214 50 186 36 154 41" fill="none" stroke="#0b1f33" stroke-width="2.2" stroke-linecap="round" marker-end="url(#cbfArrow)"/>
+        <line x1="219" y1="52" x2="240" y2="34" stroke="#d97706" stroke-width="1.2" opacity="0.7"/>
+        <defs>
+          <marker id="cbfArrow" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto">
+            <path d="M 0 0 L 6 3 L 0 6 z" fill="#0b1f33"/>
+          </marker>
+        </defs>
+        <text x="104" y="72" text-anchor="middle" fill="#d97706">h &#8805; 0</text>
+        <text x="255" y="30" text-anchor="end" fill="#d97706" opacity="0.9">h = 0</text>
+      </svg>
+      <p><strong>h</strong> defines the safe set: non-negative inside it, zero exactly on its boundary.</p>
+      <div class="card-equation">\[\dot h \ge -\gamma h\]</div>
+      <p class="card-note">Keeping h non-negative makes the safe set forward invariant: start safe, stay safe.</p>
+    </div>
+  </div>
 </div>
 
-The controller should make <em>V</em> decrease.
-
-{{% /col %}}
-{{% col class="col-50" %}}
-
-### CBF: safety
-
-A Control Barrier Function defines a safe set.
-
-<div class="compact-equation">
-\[
-h \ge 0 \quad \text{means safe}
-\]
-</div>
-
-The controller should prevent <em>h</em> from becoming negative.
-
-{{% /col %}}
-{{% /multicol %}}
-
-<p class="takeaway">CLFs encode what should happen; CBFs encode what must not happen.</p>
+<p class="takeaway">CLFs encode what should happen; CBFs encode what must not.</p>
 
 ---
 

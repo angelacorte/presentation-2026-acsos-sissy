@@ -2730,3 +2730,154 @@ $deckLine: #c7d8e6;
   border-radius: 0.18em;
   box-shadow: 0 0.35em 1.2em rgba(11, 31, 51, 0.1);
 }
+
+// ---- Pipeline flow (aggregate program -> safety filter -> robot)
+.reveal .flow {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  align-items: stretch;
+  gap: 0.35em;
+  max-width: 96%;
+  margin: 0.5em auto 0;
+}
+
+.reveal .flow-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18em;
+  padding: 0.6em 0.7em 0.7em;
+  text-align: left;
+  border: 1px solid rgba(6, 63, 114, 0.14);
+  border-radius: 0.28em;
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.96), rgba(223, 242, 255, 0.5));
+  box-shadow: 0 0.28em 1em rgba(6, 63, 114, 0.09);
+}
+
+.reveal .flow-stage strong {
+  color: $deckNavy;
+  font-size: 0.76em;
+  line-height: 1.2;
+}
+
+.reveal .flow-stage p {
+  margin: 0;
+  color: rgba(11, 31, 51, 0.74);
+  font-size: 0.52em;
+  line-height: 1.32;
+}
+
+.reveal .flow-kicker {
+  color: $deckBlue;
+  font-size: 0.42em;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.reveal .flow-stage.is-filter {
+  border-color: rgba(217, 119, 6, 0.34);
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.96), rgba(217, 119, 6, 0.12));
+}
+
+.reveal .flow-stage.is-filter .flow-kicker { color: $deckAmber; }
+
+.reveal .flow-stage.is-robot {
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.96), rgba(11, 31, 51, 0.07));
+}
+
+.reveal .flow-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.02em;
+  padding: 0 0.15em;
+}
+
+.reveal .flow-symbol {
+  color: $deckNavy;
+  font-size: 0.58em;
+  line-height: 1;
+}
+
+.reveal .flow-arrow {
+  color: $deckBlue;
+  font-size: 1.05em;
+  line-height: 1;
+}
+
+.reveal .flow-feedback {
+  position: relative;
+  max-width: 78%;
+  margin: 0.75em auto 0;
+  border-top: 2px dashed rgba(6, 63, 114, 0.3);
+  text-align: center;
+}
+
+.reveal .flow-feedback span {
+  display: inline-block;
+  transform: translateY(-0.62em);
+  padding: 0 0.7em;
+  background: $backgroundColor;
+  color: rgba(11, 31, 51, 0.62);
+  font-size: 0.46em;
+}
+
+.reveal .flow-feedback::before {
+  content: '\25C0';
+  position: absolute;
+  left: -0.05em;
+  top: -0.62em;
+  color: rgba(6, 63, 114, 0.42);
+  font-size: 0.46em;
+}
+
+// ---- CLF / CBF cards
+.reveal .ctrl-grid {
+  max-width: 94%;
+  margin: 0.45em auto 0;
+  gap: 0.9em;
+}
+
+.reveal .ctrl-grid .framework-card { padding: 0.7em 0.85em 0.55em; }
+
+.reveal .ctrl-grid .framework-card-title { font-size: 0.72em; }
+
+.reveal .ctrl-grid .framework-card-body p {
+  margin: 0;
+  font-size: 0.53em;
+  line-height: 1.34;
+}
+
+.reveal .ctrl-sketch {
+  display: block;
+  width: 74%;
+  height: auto;
+  margin: 0.2em auto 0.45em;
+}
+
+.reveal .col-middle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.reveal .ctrl-sketch text {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.reveal .card-equation {
+  margin: 0.3em 0 0.25em;
+  text-align: center;
+}
+
+.reveal .card-equation .MathJax,
+.reveal .card-equation mjx-container { font-size: 0.72em !important; }
+
+.reveal .ctrl-grid .card-note {
+  color: rgba(11, 31, 51, 0.62);
+  font-size: 0.45em !important;
+  font-style: italic;
+}
