@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="/presentation-2026-acsos-sissy/reveal-js/dist/reset.css">
 <link rel="stylesheet" href="/presentation-2026-acsos-sissy/reveal-js/dist/reveal.css">
-  <link rel="stylesheet" href="/presentation-2026-acsos-sissy/css/custom-theme.min.388272a752bc3f7331b4ca9b59947bbc3f1ce50d5cac04be5b87c08b517967cc.css" id="theme"><link rel="stylesheet" href="/presentation-2026-acsos-sissy/highlight-js/solarized-dark.min.css">
+  <link rel="stylesheet" href="/presentation-2026-acsos-sissy/css/custom-theme.min.5378d37c311fadc8d63b78df7965c55958c2ec4fb841ef33ae9f93340310b6bd.css" id="theme"><link rel="stylesheet" href="/presentation-2026-acsos-sissy/highlight-js/solarized-dark.min.css">
 <link href="https://fonts.googleapis.com/css?family=Roboto Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Oxygen Mono" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Ubuntu Mono" rel="stylesheet">
@@ -161,9 +161,18 @@ Mälardalen University, Västerås, Sweden</span></p>
 <p class="takeaway">Global self-organizing behavior emerges from repeated local interaction.</p>
 </div></section><section>
 <h1 id="the-limitation-self-stabilization-is-eventual">The limitation: self-stabilization is eventual</h1>
-<p>AC provides reusable coordination patterns with self-stabilizing behavior.</p>
-<p>Under stable inputs and network topology, the system can recover from transient changes and <strong>eventually</strong> converge to a stable collective state.</p>
+<h3 id="convergence-is-guaranteed-but-only-in-the-limit">Convergence is guaranteed, but only in the limit</h3>
+
+<div class="container w-100 m-0 p-0">
+    <div class="row "><div style="text-align: justify" class="col col-50"><p><video class="field-video" data-autoplay="" src="./images/eventual_consistency.mp4" type="video/mp4" loop="" muted="" playsinline="">
+</video></p>
+</div>
+<div style="text-align: justify" class="col col-50"><p>AC provides reusable coordination patterns with <strong>self-stabilizing</strong> behavior.</p>
+<p>Under stable inputs and network topology, the system recovers from transient changes and <strong>eventually</strong> converges to a stable collective state.</p>
 <p>But during that transient phase — or while the environment keeps changing — the aggregate program may continue adapting without guaranteeing that every physical constraint is respected.</p>
+</div>
+</div>
+</div>
 <div class="pattern-line">
   <span>obstacle collisions</span>
   <span>inter-robot collisions</span>
@@ -236,7 +245,7 @@ h \ge 0 \quad \text{means safe}
 <p class="takeaway">Stay as close as possible to the aggregate command, but never violate active hard safety constraints.</p>
 </section><section>
 <h1 id="proposed-architecture">Proposed architecture</h1>
-<img class="paper-figure architecture" alt="Architecture of the aggregate safety filter" src="./images/architecture.pdf">
+<img class="paper-figure architecture" alt="Architecture of the aggregate safety filter" src="./images/architecture.png">
 <div class="three-beats">
   <span><b>1.</b> AC computes <em>u<sub>nom</sub></em></span>
   <span><b>2.</b> CLF/CBF filter computes <em>u</em></span>
@@ -245,7 +254,7 @@ h \ge 0 \quad \text{means safe}
 <p class="takeaway">Collective strategy and physical safety are kept modular.</p>
 </section><section>
 <h1 id="distributed-safety-constraints">Distributed safety constraints</h1>
-<img class="paper-figure device-view" alt="Device-wise view of local and pairwise quadratic programs" src="./images/architecture2.pdf">
+<img class="paper-figure device-view" alt="Device-wise view of local and pairwise quadratic programs" src="./images/architecture2.svg">
 
 <div class="container w-100 m-0 p-0">
     <div class="row "><div style="text-align: justify" class="col col-50"><h3 id="local-constraints">Local constraints</h3>
@@ -275,6 +284,21 @@ h \ge 0 \quad \text{means safe}
 </div>
 <p class="takeaway">The active constraints depend on the collective task being executed.</p>
 </section><section>
+<h1 id="solving-it-in-a-distributed-way">Solving it in a distributed way</h1>
+<h3 id="one-global-problem-split-into-local-and-edge-wise-subproblems">One global problem, split into local and edge-wise subproblems</h3>
+<div class="formula">
+\[
+\min_{u_i \in \mathcal{U},\, \delta_i \ge 0} \; \sum_{i=1}^{N} \left( \|u_i - u_{nom,i}\|^2 + \rho\,\delta_i^2 \right)
+\]
+</div>
+<div class="three-beats">
+  <span><b>1.</b> Split into local and pairwise subproblems</span>
+  <span><b>2.</b> Exchange coupled variables</span>
+  <span><b>3.</b> Iterate with ADMM until agreement</span>
+</div>
+<p class="small-center">The formulation specifies <em>what</em> must be enforced, independently of <em>how</em> the solution is computed.</p>
+<p class="takeaway">The safety filter is itself an aggregate program: no global synchronization, only neighbor-to-neighbor exchange.</p>
+</section><section>
 <h1 id="proof-of-concept">Proof of concept</h1>
 <div class="metrics">
   <div><strong>4</strong><span>robots in 2D</span></div>
@@ -286,15 +310,42 @@ h \ge 0 \quad \text{means safe}
 <p class="small-center">This is a proof of concept: the goal is to validate the architecture, not yet to provide a scalability benchmark.</p>
 </section><section>
 <h1 id="scenario-1-different-targets">Scenario 1: different targets</h1>
-<img class="simulation" alt="Animated simulation of robots reaching two different targets" src="./images/different-targets-amber.gif">
+<img class="simulation" alt="Animated simulation of robots reaching two different targets" src="./images/different-targets-amber-crop.gif">
+<div class="sim-legend">
+  <span><span class="lg lg-robot"></span>Robots</span>
+  <span><span class="lg lg-safety"></span>Robot safety radius</span>
+  <span><span class="lg lg-comm"></span>Communication radius</span>
+  <span><span class="lg lg-link"></span>Links within communication distance</span>
+  <span><span class="lg-star">★</span>Targets</span>
+  <span><span class="lg-cross">✖</span>Obstacles</span>
+  <span><span class="lg lg-margin"></span>Obstacle safety margin</span>
+</div>
 <p class="takeaway">Different nominal goals, shared safety constraints: robots reach their targets while avoiding obstacles and collisions.</p>
 </section><section>
 <h1 id="scenario-2-leader-election-and-connectivity">Scenario 2: leader election and connectivity</h1>
-<img class="simulation" alt="Animated leader-election and connectivity-preservation simulation" src="./images/follow-leader-amber.gif">
+<img class="simulation" alt="Animated leader-election and connectivity-preservation simulation" src="./images/follow-leader-amber-crop.gif">
+<div class="sim-legend">
+  <span><span class="lg lg-robot"></span>Robots</span>
+  <span><span class="lg lg-safety"></span>Robot safety radius</span>
+  <span><span class="lg lg-comm"></span>Communication radius</span>
+  <span><span class="lg lg-link"></span>Links within communication distance</span>
+  <span><span class="lg-star">★</span>Targets</span>
+  <span><span class="lg-cross">✖</span>Obstacles</span>
+  <span><span class="lg lg-margin"></span>Obstacle safety margin</span>
+</div>
 <p class="takeaway">The aggregate strategy adapts when clusters merge, while the safety filter preserves selected communication links.</p>
 </section><section>
 <h1 id="scenario-3-when-safety-reveals-a-strategy-limit">Scenario 3: when safety reveals a strategy limit</h1>
-<img class="simulation" alt="Animated simulation with multiple obstacles and a local minimum" src="./images/multiple-obstacles-amber.gif">
+<img class="simulation" alt="Animated simulation with multiple obstacles and a local minimum" src="./images/multiple-obstacles-amber-crop.gif">
+<div class="sim-legend">
+  <span><span class="lg lg-robot"></span>Robots</span>
+  <span><span class="lg lg-safety"></span>Robot safety radius</span>
+  <span><span class="lg lg-comm"></span>Communication radius</span>
+  <span><span class="lg lg-link"></span>Links within communication distance</span>
+  <span><span class="lg-star">★</span>Targets</span>
+  <span><span class="lg-cross">✖</span>Obstacles</span>
+  <span><span class="lg lg-margin"></span>Obstacle safety margin</span>
+</div>
 <p class="takeaway">The filter correctly blocks unsafe motion, but a direct target policy can get trapped in a local minimum.</p>
 <p class="next-step">This motivates runtime strategy adaptation in the AC layer: switch target, waypoint, or exploration policy.</p>
 </section><section>
