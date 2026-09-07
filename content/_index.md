@@ -121,12 +121,32 @@ A collective strategy may correctly describe <strong>where the swarm should go</
 ---
 
 # The limitation: self-stabilization is eventual
+### Convergence is guaranteed, but only in the limit
 
-AC provides reusable coordination patterns with self-stabilizing behavior.
+{{% multicol %}}
+{{% col class="col-50" %}}
 
-Under stable inputs and network topology, the system can recover from transient changes and **eventually** converge to a stable collective state.
+<video
+    class="field-video"
+    data-autoplay
+    src="./images/eventual_consistency.mp4"
+    type="video/mp4"
+    loop
+    muted
+    playsinline>
+</video>
+
+{{% /col %}}
+{{% col class="col-50" %}}
+
+AC provides reusable coordination patterns with **self-stabilizing** behavior.
+
+Under stable inputs and network topology, the system recovers from transient changes and **eventually** converges to a stable collective state.
 
 But during that transient phase — or while the environment keeps changing — the aggregate program may continue adapting without guaranteeing that every physical constraint is respected.
+
+{{% /col %}}
+{{% /multicol %}}
 
 <div class="pattern-line">
   <span>obstacle collisions</span>
@@ -236,7 +256,7 @@ The controller should prevent <em>h</em> from becoming negative.
 
 # Proposed architecture
 
-<img class="paper-figure architecture" alt="Architecture of the aggregate safety filter" src="./images/architecture.pdf" />
+<img class="paper-figure architecture" alt="Architecture of the aggregate safety filter" src="./images/architecture.png" />
 
 <div class="three-beats">
   <span><b>1.</b> AC computes <em>u<sub>nom</sub></em></span>
@@ -250,7 +270,7 @@ The controller should prevent <em>h</em> from becoming negative.
 
 # Distributed safety constraints
 
-<img class="paper-figure device-view" alt="Device-wise view of local and pairwise quadratic programs" src="./images/architecture2.pdf" />
+<img class="paper-figure device-view" alt="Device-wise view of local and pairwise quadratic programs" src="./images/architecture2.svg" />
 
 {{% multicol %}}
 {{% col class="col-50" %}}
@@ -290,6 +310,27 @@ The controller should prevent <em>h</em> from becoming negative.
 
 ---
 
+# Solving it in a distributed way
+### One global problem, split into local and edge-wise subproblems
+
+<div class="formula">
+\[
+\min_{u_i \in \mathcal{U},\, \delta_i \ge 0} \; \sum_{i=1}^{N} \left( \|u_i - u_{nom,i}\|^2 + \rho\,\delta_i^2 \right)
+\]
+</div>
+
+<div class="three-beats">
+  <span><b>1.</b> Split into local and pairwise subproblems</span>
+  <span><b>2.</b> Exchange coupled variables</span>
+  <span><b>3.</b> Iterate with ADMM until agreement</span>
+</div>
+
+<p class="small-center">The formulation specifies <em>what</em> must be enforced, independently of <em>how</em> the solution is computed.</p>
+
+<p class="takeaway">The safety filter is itself an aggregate program: no global synchronization, only neighbor-to-neighbor exchange.</p>
+
+---
+
 # Proof of concept
 
 <div class="metrics">
@@ -307,7 +348,17 @@ The controller should prevent <em>h</em> from becoming negative.
 
 # Scenario 1: different targets
 
-<img class="simulation" alt="Animated simulation of robots reaching two different targets" src="./images/different-targets-amber.gif" />
+<img class="simulation" alt="Animated simulation of robots reaching two different targets" src="./images/different-targets-amber-crop.gif" />
+
+<div class="sim-legend">
+  <span><span class="lg lg-robot"></span>Robots</span>
+  <span><span class="lg lg-safety"></span>Robot safety radius</span>
+  <span><span class="lg lg-comm"></span>Communication radius</span>
+  <span><span class="lg lg-link"></span>Links within communication distance</span>
+  <span><span class="lg-star">&#9733;</span>Targets</span>
+  <span><span class="lg-cross">&#10006;</span>Obstacles</span>
+  <span><span class="lg lg-margin"></span>Obstacle safety margin</span>
+</div>
 
 <p class="takeaway">Different nominal goals, shared safety constraints: robots reach their targets while avoiding obstacles and collisions.</p>
 
@@ -315,7 +366,17 @@ The controller should prevent <em>h</em> from becoming negative.
 
 # Scenario 2: leader election and connectivity
 
-<img class="simulation" alt="Animated leader-election and connectivity-preservation simulation" src="./images/follow-leader-amber.gif" />
+<img class="simulation" alt="Animated leader-election and connectivity-preservation simulation" src="./images/follow-leader-amber-crop.gif" />
+
+<div class="sim-legend">
+  <span><span class="lg lg-robot"></span>Robots</span>
+  <span><span class="lg lg-safety"></span>Robot safety radius</span>
+  <span><span class="lg lg-comm"></span>Communication radius</span>
+  <span><span class="lg lg-link"></span>Links within communication distance</span>
+  <span><span class="lg-star">&#9733;</span>Targets</span>
+  <span><span class="lg-cross">&#10006;</span>Obstacles</span>
+  <span><span class="lg lg-margin"></span>Obstacle safety margin</span>
+</div>
 
 <p class="takeaway">The aggregate strategy adapts when clusters merge, while the safety filter preserves selected communication links.</p>
 
@@ -323,7 +384,17 @@ The controller should prevent <em>h</em> from becoming negative.
 
 # Scenario 3: when safety reveals a strategy limit
 
-<img class="simulation" alt="Animated simulation with multiple obstacles and a local minimum" src="./images/multiple-obstacles-amber.gif" />
+<img class="simulation" alt="Animated simulation with multiple obstacles and a local minimum" src="./images/multiple-obstacles-amber-crop.gif" />
+
+<div class="sim-legend">
+  <span><span class="lg lg-robot"></span>Robots</span>
+  <span><span class="lg lg-safety"></span>Robot safety radius</span>
+  <span><span class="lg lg-comm"></span>Communication radius</span>
+  <span><span class="lg lg-link"></span>Links within communication distance</span>
+  <span><span class="lg-star">&#9733;</span>Targets</span>
+  <span><span class="lg-cross">&#10006;</span>Obstacles</span>
+  <span><span class="lg lg-margin"></span>Obstacle safety margin</span>
+</div>
 
 <p class="takeaway">The filter correctly blocks unsafe motion, but a direct target policy can get trapped in a local minimum.</p>
 

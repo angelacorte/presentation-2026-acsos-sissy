@@ -2481,8 +2481,8 @@ $deckLine: #c7d8e6;
   display: block;
   width: auto;
   max-width: 72%;
-  max-height: 14.7em;
-  margin: 0.25em auto 0.55em;
+  max-height: 13em;
+  margin: 0.25em auto 0.35em;
   border: 1px solid rgba(22, 104, 178, 0.16);
   border-radius: 0.18em;
   background: #fff;
@@ -2648,4 +2648,85 @@ $deckLine: #c7d8e6;
   padding: 0.22em;
   border: 1px solid $deckLine;
   background: white;
+}
+
+// ---- Simulation legend (replaces the clipped matplotlib legend baked into the GIFs)
+.reveal .sim-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3em 1.25em;
+  max-width: 88%;
+  margin: 0.1em auto 0.4em;
+  color: rgba(11, 31, 51, 0.7);
+  font-size: 0.46em;
+  line-height: 1.5;
+}
+
+.reveal .sim-legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  white-space: nowrap;
+}
+
+.reveal .sim-legend .lg {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 0.95em;
+  height: 0.95em;
+  border-radius: 999px;
+}
+
+.reveal .sim-legend .lg-robot {
+  background: #1f77b4;
+  border: 1px solid #14496e;
+}
+
+.reveal .sim-legend .lg-safety {
+  background: #e4e4e4;
+  border: 1px solid #c2c2c2;
+}
+
+.reveal .sim-legend .lg-comm {
+  background: #dbeae7;
+  border: 1px solid #b4d0cb;
+}
+
+.reveal .sim-legend .lg-link {
+  width: 1.35em;
+  height: 0.17em;
+  border-radius: 0.09em;
+  background: #7f7f7f;
+}
+
+.reveal .sim-legend .lg-margin {
+  width: 1.35em;
+  height: 0.42em;
+  border-radius: 0.09em;
+  background: #dfb878;
+}
+
+.reveal .sim-legend .lg-star,
+.reveal .sim-legend .lg-cross {
+  flex: 0 0 auto;
+  font-size: 1.15em;
+  line-height: 1;
+}
+
+.reveal .sim-legend .lg-star { color: #2ca02c; }
+.reveal .sim-legend .lg-cross { color: #7c1212; }
+
+// ---- Field-trial video (portrait clip shown beside the text)
+.reveal .field-video {
+  display: block;
+  width: auto;
+  height: 12.6em;
+  max-width: 100%;
+  aspect-ratio: 1052 / 1114;
+  margin: 0 auto;
+  border: 1px solid rgba(22, 104, 178, 0.16);
+  border-radius: 0.18em;
+  box-shadow: 0 0.35em 1.2em rgba(11, 31, 51, 0.1);
 }
