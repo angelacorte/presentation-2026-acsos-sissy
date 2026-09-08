@@ -2581,7 +2581,7 @@ $deckLine: #c7d8e6;
   display: flex;
   gap: 2.4em;
   justify-content: center;
-  max-width: 54em;
+  max-width: 58em;
   margin: 0.9em auto 0;
   color: rgba(11, 31, 51, 0.76);
   font-size: 0.5em;
@@ -2591,8 +2591,10 @@ $deckLine: #c7d8e6;
 
 .reveal .slides > section:first-child .deck-affiliation {
   display: inline-block;
-  width: 46%;
+  flex: 0 1 auto;
+  width: auto;
   vertical-align: top;
+  white-space: nowrap;
 }
 
 .reveal .hero-logo {
