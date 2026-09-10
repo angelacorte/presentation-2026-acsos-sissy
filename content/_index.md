@@ -23,8 +23,8 @@ Mälardalen University, Västerås, Sweden</span>
 {{% spacer %}}
 
 <div class="hero-logo">
-  <img src="./images/DIP INFORMATICA-SCIENZA E INGEGNERIA_DISI_EN.svg" width="45%">
-  <img src="./images/MDU_logotyp.png" width="30%">
+  <img src="./images/DIP INFORMATICA-SCIENZA E INGEGNERIA_DISI_EN.svg" width="60%">
+  <img src="./images/MDU_logotyp.png" width="50%">
 </div>
 
 ---
@@ -32,24 +32,18 @@ Mälardalen University, Västerås, Sweden</span>
 # Safe adaptation in robot swarms
 ### Collective strategies must respect physical constraints during execution
 
-{{% multicol %}}
-{{% col class="col-50" %}}
+<p class="small-center">In search and rescue or environmental monitoring, a swarm must reach its goal &mdash; and stay safe on the way.</p>
 
-![Four drones approaching an obstacle](./images/drone_formation.svg)
-
-{{% /col %}}
-{{% col class="col-50" %}}
-
-In applications such as search and rescue or environmental monitoring, groups of robots must:
-
-- coordinate toward a common objective;
-- adapt to changing conditions;
-- remain safe while doing so.
-
-A collective strategy may correctly describe <strong>where the swarm should go</strong>, while still producing unsafe motion on the way.
-
-{{% /col %}}
-{{% /multicol %}}
+<div class="motion-pair">
+  <div class="motion-item">
+    <img class="motion-figure" src="./images/drones_changing-formation.png" alt="The swarm splits to squeeze between the obstacles, its communication links break, and it reforms on the other side" />
+    <p class="motion-caption is-problem">the group splits to get through: links break</p>
+  </div>
+  <div class="motion-item">
+    <img class="motion-figure" src="./images/drones_avoiding_formation.png" alt="The swarm goes around the obstacle while staying connected" />
+    <p class="motion-caption is-safe">what we want: around the obstacle, still connected</p>
+  </div>
+</div>
 
 <p class="takeaway">We need both an expressive way to specify collective behavior and a mechanism that enforces safety during execution.</p>
 

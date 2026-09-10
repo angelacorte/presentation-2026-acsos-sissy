@@ -3009,5 +3009,45 @@ $deckLine: #c7d8e6;
 }
 
 .reveal .slides > section:first-child .hero-logo img {
-  width: 44%;
+  max-width: 16em;
+  height: 3.15em;
+  max-height: 3.15em;
 }
+
+.reveal .slides > section:first-child .hero-logo img:last-child {
+  height: 3.55em;
+  max-height: 3.55em;
+}
+
+// ---- Animated before/after pair on the motivation slide
+.reveal .motion-pair {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1.4em;
+  width: 100%;
+  margin: 0.35em auto 0;
+}
+
+.reveal .motion-item {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.reveal .motion-figure {
+  display: block;
+  width: 100%;
+  height: 11.8em;
+  margin: 0 auto 0.2em;
+  object-fit: contain;
+}
+
+.reveal .motion-caption {
+  margin: 0;
+  font-size: 0.5em;
+  font-weight: 600;
+  text-align: center;
+}
+
+.reveal .motion-caption.is-problem { color: $deckAmber; }
+.reveal .motion-caption.is-safe { color: #063f72; }
