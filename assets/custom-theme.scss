@@ -320,12 +320,15 @@ kbd {
   border-width: 0.3em 0.3em;
 }
 
-.reveal .slide-background:after {
+// One single footer on the deck container: attached to a per-slide background it
+// was duplicated 16 times and faded out/in at every slide change.
+.reveal::after {
   content: "Cortecchia et al - Toward Safe Aggregate Computing: A Distributed Control-Theoretic Safety Filter for Robot Swarms || @ SISSY 2026";
   position: absolute;
   bottom: 2.5%;
   right: 6%;
-  z-index: -1;
+  z-index: 5;
+  pointer-events: none;
   color: rgba(9, 90, 166, 0.62);
   font-size: .5em;
 }
