@@ -321,7 +321,7 @@ kbd {
 }
 
 .reveal .slide-background:after {
-  content: "Cortecchia A. et Al - Toward Safe Aggregate Computing: A Distributed Control-Theoretic Safety Filter for Robot Swarms || @ SISSY 2026";
+  content: "Cortecchia et al - Toward Safe Aggregate Computing: A Distributed Control-Theoretic Safety Filter for Robot Swarms || @ SISSY 2026";
   position: absolute;
   bottom: 2.5%;
   right: 6%;
@@ -2238,16 +2238,16 @@ $deckLine: #c7d8e6;
   background-image: none;
 }
 
-.reveal .slide-background::after {
-  right: 4.8%;
-  bottom: 2.2%;
-  z-index: 0;
-  content: "Toward Safe Aggregate Computing · SISSY 2026";
-  color: rgba(11, 31, 51, 0.42);
-  font-size: 0.34em;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
+//.reveal .slide-background::after {
+//  right: 4.8%;
+//  bottom: 2.2%;
+//  z-index: 0;
+//  content: "Toward Safe Aggregate Computing · SISSY 2026";
+//  color: rgba(11, 31, 51, 0.42);
+//  font-size: 0.34em;
+//  font-weight: 600;
+//  letter-spacing: 0.02em;
+//}
 
 .reveal .slides > section {
   box-sizing: border-box;
@@ -2421,8 +2421,9 @@ $deckLine: #c7d8e6;
   display: grid;
   grid-template-columns: 0.72fr 1.45fr;
   gap: 1em;
-  padding: 0.42em 0.15em;
+  padding: 0.42em 0.15em 0.42em 0.6em;
   border-bottom: 1px solid $deckLine;
+  border-left: 3px solid transparent;
   font-size: 0.68em;
   line-height: 1.16;
 }
@@ -2430,6 +2431,22 @@ $deckLine: #c7d8e6;
 .reveal .constraint-list b {
   color: $deckAmber;
 }
+
+// Same colour logic as the CLF / CBF cards: blue = soft progress, amber = hard safety
+.reveal .constraint-list > div.is-clf {
+  border-left-color: #1668b2;
+  background: rgba(22, 104, 178, 0.07);
+}
+
+.reveal .constraint-list > div.is-clf b { color: #1668b2; }
+
+.reveal .constraint-list > div.is-cbf {
+  border-left-color: #d97706;
+  background: rgba(217, 119, 6, 0.08);
+}
+
+.reveal .constraint-list > div.is-cbf b { color: #d97706; }
+
 
 .reveal .metrics {
   display: grid;
@@ -2847,15 +2864,15 @@ $deckLine: #c7d8e6;
 
 .reveal .ctrl-grid .framework-card-body p {
   margin: 0;
-  font-size: 0.53em;
-  line-height: 1.34;
+  font-size: 0.58em;
+  line-height: 1.36;
 }
 
 .reveal .ctrl-sketch {
   display: block;
-  width: 74%;
+  width: 66%;
   height: auto;
-  margin: 0.2em auto 0.45em;
+  margin: 0.3em auto 0.55em;
 }
 
 .reveal .col-middle {
@@ -2870,16 +2887,127 @@ $deckLine: #c7d8e6;
   font-weight: 600;
 }
 
-.reveal .card-equation {
-  margin: 0.3em 0 0.25em;
-  text-align: center;
+
+// ---- QP constraint rows (boxed, tinted, one per constraint family)
+.reveal .qp-rows {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.34em;
+  margin: 0.6em auto 0.15em;
 }
 
-.reveal .card-equation .MathJax,
-.reveal .card-equation mjx-container { font-size: 0.72em !important; }
+.reveal .qp-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1.05em;
+  width: auto;
+  padding: 0.22em 0.9em;
+  border: 3px solid;
+  border-radius: 0.2em;
+}
 
-.reveal .ctrl-grid .card-note {
-  color: rgba(11, 31, 51, 0.62);
-  font-size: 0.45em !important;
-  font-style: italic;
+.reveal .qp-row .qp-math {
+  min-width: 6.3em;
+  text-align: left;
+}
+
+.reveal .qp-row .qp-math mjx-container { margin: 0 !important; }
+
+.reveal .qp-row .qp-note {
+  color: rgba(11, 31, 51, 0.72);
+  font-size: 0.6em;
+  white-space: nowrap;
+}
+
+.reveal .qp-row.is-clf {
+  border-color: #1668b2;
+  background: rgba(22, 104, 178, 0.10);
+}
+
+.reveal .qp-row.is-cbf {
+  border-color: #d97706;
+  background: rgba(217, 119, 6, 0.12);
+}
+
+// ---- Compact variant of the pipeline: a one-line reminder under a figure
+.reveal .flow.is-mini {
+  grid-template-columns: repeat(5, auto);
+  justify-content: center;
+  gap: 0.3em;
+  margin-top: 0.35em;
+}
+
+.reveal .flow.is-mini .flow-stage {
+  justify-content: center;
+  padding: 0.3em 1em;
+}
+
+.reveal .flow.is-mini .flow-stage strong { font-size: 0.66em; }
+
+// ---- Safety-filter sketch (nominal command vs applied command)
+.reveal .filter-sketch {
+  display: block;
+  width: 98%;
+  height: auto;
+  margin: 0.35em auto 0.25em;
+}
+
+.reveal .filter-sketch text {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.reveal .sim-legend .lg-nom {
+  width: 1.6em;
+  height: 0.2em;
+  border-radius: 0;
+  background: repeating-linear-gradient(to right, #1668b2 0 0.34em, transparent 0.34em 0.58em);
+}
+
+.reveal .sim-legend .lg-app {
+  width: 1.6em;
+  height: 0.2em;
+  border-radius: 0.1em;
+  background: #063f72;
+}
+
+.reveal .sim-legend .lg-unsafe {
+  background: rgba(217, 119, 6, 0.2);
+  border: 2px solid #d97706;
+}
+
+// ---- Cover with a single-line title: it must not inherit the small "kicker" style
+.reveal .slides > section:first-child h1:only-of-type {
+  color: $deckNavy;
+  font-size: 1.34em;
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: normal;
+  text-wrap: balance;
+}
+
+.reveal .slides > section:first-child h1:only-of-type strong {
+  color: $deckBlue;
+  font-weight: 700;
+}
+
+.reveal .slides > section:first-child h1:only-of-type::after {
+  display: block;
+  width: 3.4em;
+  margin: 0.4em auto 0.5em;
+}
+
+.reveal .slides > section:first-child h1:only-of-type + p {
+  font-size: 0.94em !important;
+}
+
+.reveal .slides > section:first-child h1:only-of-type ~ p:nth-of-type(2) {
+  font-size: 0.68em;
+}
+
+.reveal .slides > section:first-child .hero-logo img {
+  width: 44%;
 }

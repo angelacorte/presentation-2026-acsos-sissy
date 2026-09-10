@@ -6,8 +6,7 @@ outputs = ["Reveal"]
 enable = true
 +++
 
-# Toward **Safe Aggregate Computing**:
-# A Distributed Control-Theoretic Safety Filter for Robot Swarms
+# Toward **Safe Aggregate Computing**: A Distributed Control-Theoretic Safety Filter for Robot Swarms
 
 [**<span class="deck-title-accent">Angela Cortecchia</span>**](mailto:angela.cortecchia@unibo.it)<small>1</small>,
 [Alessandro Papadopoulos](mailto:alessandro.papadopoulos@mdu.se)<small>2</small>,
@@ -167,47 +166,21 @@ A collective strategy may correctly describe <strong>where the swarm should go</
 
 ---
 
-# The missing layer: safe actuation
+# The safety layer
 ### The aggregate command is filtered, not replaced
 
-<div class="flow">
-  <div class="flow-stage">
-    <span class="flow-kicker">Collective level</span>
-    <strong>Aggregate program</strong>
-    <p>Computes the intended motion: where the robot <em>would like</em> to go.</p>
-  </div>
-  <div class="flow-link">
-    <span class="flow-symbol"><em>u<sub>nom</sub></em></span>
-    <span class="flow-arrow">&#10230;</span>
-  </div>
-  <div class="flow-stage is-filter">
-    <span class="flow-kicker">Control level</span>
-    <strong>Safety filter</strong>
-    <p>Checks whether that command is admissible, and minimally corrects it.</p>
-  </div>
-  <div class="flow-link">
-    <span class="flow-symbol"><em>u</em></span>
-    <span class="flow-arrow">&#10230;</span>
-  </div>
-  <div class="flow-stage is-robot">
-    <span class="flow-kicker">Actuation</span>
-    <strong>Robot</strong>
-    <p>Applies the safe command; the resulting state is sensed again.</p>
-  </div>
-</div>
+<img class="paper-figure architecture" alt="Architecture of the aggregate safety filter" src="./images/architecture.png" />
 
-<div class="flow-feedback"><span>robot state fed back to both layers</span></div>
-
-<p class="takeaway">The idea is not to replace AC, but to filter its commands before actuation.</p>
+<p class="takeaway">Collective strategy and physical safety stay modular: AC commands are filtered, not replaced.</p>
 
 ---
 
 # Control functions for convergence and safety
-### Two scalar functions: one for progress, one for safety
+### One score for progress, one score for danger
 
 <div class="framework-grid is-two ctrl-grid">
   <div class="framework-card is-azure">
-    <div class="framework-card-title">CLF &mdash; what <em>should</em> happen</div>
+    <div class="framework-card-title">Control Lyapunov Functions (CLF) &mdash; what <em>should</em> happen</div>
     <div class="framework-card-body">
       <svg class="ctrl-sketch" viewBox="0 0 260 116" role="img" aria-label="A trajectory descending a bowl toward the target where V is zero">
         <path d="M 20 16 Q 130 150 240 16" fill="none" stroke="#1668b2" stroke-width="2.4" stroke-linecap="round"/>
@@ -221,13 +194,11 @@ A collective strategy may correctly describe <strong>where the swarm should go</
         </defs>
         <text x="130" y="104" text-anchor="middle" fill="#1668b2">V = 0 at the target</text>
       </svg>
-      <p><strong>V</strong> measures the distance from the goal: zero on the target, positive everywhere else.</p>
-      <div class="card-equation">\[\dot V \le -cV\]</div>
-      <p class="card-note">Forcing V to decrease exponentially drives the state to the target.</p>
+      <p><strong>V</strong> scores how far the robot still is from its goal. The controller must keep pushing that score down, toward zero.</p>
     </div>
   </div>
   <div class="framework-card is-red">
-    <div class="framework-card-title">CBF &mdash; what must <em>not</em> happen</div>
+    <div class="framework-card-title">Control Barrier Functions (CBF) &mdash; what must <em>not</em> happen</div>
     <div class="framework-card-body">
       <svg class="ctrl-sketch" viewBox="0 0 260 116" role="img" aria-label="A trajectory deflected along the boundary of the safe set">
         <path d="M 46 96 C 22 56 58 16 122 18 C 190 20 240 52 226 84 C 214 108 76 116 46 96 Z" fill="#d97706" fill-opacity="0.13" stroke="#d97706" stroke-width="2.4"/>
@@ -241,9 +212,7 @@ A collective strategy may correctly describe <strong>where the swarm should go</
         <text x="104" y="72" text-anchor="middle" fill="#d97706">h &#8805; 0</text>
         <text x="255" y="30" text-anchor="end" fill="#d97706" opacity="0.9">h = 0</text>
       </svg>
-      <p><strong>h</strong> defines the safe set: non-negative inside it, zero exactly on its boundary.</p>
-      <div class="card-equation">\[\dot h \ge -\gamma h\]</div>
-      <p class="card-note">Keeping h non-negative makes the safe set forward invariant: start safe, stay safe.</p>
+      <p><strong>h</strong> scores how much safety margin is left. The controller must never let that score reach zero.</p>
     </div>
   </div>
 </div>
@@ -252,37 +221,135 @@ A collective strategy may correctly describe <strong>where the swarm should go</
 
 ---
 
-# The safety filter
+# Minimization Problem
+### As close as possible to the nominal command, without entering the unsafe region
+
+{{% multicol %}}
+{{% col class="col-50 col-middle" %}}
 
 <div class="formula">
 \[
 \min_{u,\,\delta \ge 0}\; \|u-u_{nom}\|^2 + \rho\delta^2
 \]
-\[
-\begin{aligned}
-\dot V &\le -cV + \delta && \text{progress: soft CLF}\\
-\dot h_j &\ge -\gamma_j h_j && \text{safety: hard CBFs}
-\end{aligned}
-\]
+<div class="qp-rows">
+  <div class="qp-row is-clf">
+    <span class="qp-math">\(\dot V \le -cV + \delta\)</span>
+    <span class="qp-note">progress: soft CLF</span>
+  </div>
+  <div class="qp-row is-cbf">
+    <span class="qp-math">\(\dot h_j \ge -\gamma_j h_j\)</span>
+    <span class="qp-note">safety: hard CBFs</span>
+  </div>
+</div>
 </div>
 
-<p class="takeaway">Stay as close as possible to the aggregate command, but never violate active hard safety constraints.</p>
+{{% /col %}}
+{{% col class="col-50 col-middle" %}}
+
+<svg class="filter-sketch" viewBox="0 0 520 230" role="img" aria-label="The robot heads straight for its target, but the direct route crosses an unsafe region, so the filter bends the command around the boundary and back toward the target">
+  <defs>
+    <marker id="nomArrow" markerUnits="userSpaceOnUse" markerWidth="17" markerHeight="15" refX="0" refY="7.5" orient="auto"><path d="M 0 0 L 17 7.5 L 0 15 z" fill="#1668b2"/></marker>
+    <marker id="appArrow" markerUnits="userSpaceOnUse" markerWidth="17" markerHeight="15" refX="0" refY="7.5" orient="auto"><path d="M 0 0 L 17 7.5 L 0 15 z" fill="#063f72"/></marker>
+  </defs>
+  <circle cx="260" cy="140" r="64" fill="#d97706" fill-opacity="0.16" stroke="#d97706" stroke-width="2" stroke-dasharray="6 5"/>
+  <circle cx="260" cy="140" r="42" fill="#878480" fill-opacity="0.5"/>
+  <circle cx="60" cy="140" r="10" fill="#1f77b4" stroke="#14496e" stroke-width="2"/>
+  <polygon points="462,125 465.8,134.7 476.3,135.4 468.2,142 470.8,152.1 462,146.5 453.2,152.1 455.8,142 447.7,135.4 458.2,134.7" fill="#2ca02c"/>
+  <text x="60" y="178" text-anchor="middle" fill="#14496e">robot</text>
+  <text x="462" y="180" text-anchor="middle" fill="#2ca02c">target</text>
+  <text x="260" y="146" text-anchor="middle" fill="#5c5854">unsafe</text>
+  <g class="fragment" data-fragment-index="1">
+    <line x1="76" y1="140" x2="436" y2="140" stroke="#0b1f33" stroke-opacity="0.2" stroke-width="2" stroke-dasharray="7 7"/>
+    <path d="M 78 140 L 148 140" fill="none" stroke="#1668b2" stroke-width="4.5" stroke-dasharray="10 7" marker-end="url(#nomArrow)"/>
+    <text x="130" y="166" text-anchor="middle" fill="#1668b2">u<tspan font-size="9" dy="3">nom</tspan></text>
+  </g>
+  <g class="fragment" data-fragment-index="2">
+    <g stroke="#d97706" stroke-width="3.6" stroke-linecap="round"><line x1="192" y1="131" x2="209" y2="149"/><line x1="209" y1="131" x2="192" y2="149"/></g>
+  </g>
+  <g class="fragment" data-fragment-index="3">
+    <path d="M 80 133 C 140 130 175 122 197.6 104 A 72 72 0 0 1 322.4 104 C 350 128 392 132 426 133" fill="none" stroke="#063f72" stroke-width="4.5" stroke-linecap="round" marker-end="url(#appArrow)"/>
+    <text x="260" y="56" text-anchor="middle" fill="#063f72">u</text>
+  </g>
+</svg>
+
+<div class="sim-legend">
+  <span><span class="lg lg-nom"></span><em>u<sub>nom</sub></em> &mdash; what the aggregate program asks for</span>
+  <span><span class="lg lg-app"></span><em>u</em> &mdash; what the safety filter applies</span>
+  <span><span class="lg lg-unsafe"></span>region the robot must stay out of</span>
+</div>
+
+{{% /col %}}
+{{% /multicol %}}
+
+<p class="takeaway fragment" data-fragment-index="4">Stay as close as possible to the aggregate command, but never violate active hard safety constraints.</p>
 
 ---
 
-# Proposed architecture
+# What can be enforced?
 
-<img class="paper-figure architecture" alt="Architecture of the aggregate safety filter" src="./images/architecture.png" />
-
-<div class="three-beats">
-  <span><b>1.</b> AC computes <em>u<sub>nom</sub></em></span>
-  <span><b>2.</b> CLF/CBF filter computes <em>u</em></span>
-  <span><b>3.</b> Robot acts and feeds back its state</span>
+<div class="constraint-list">
+  <div class="is-clf"><b>Reach the target</b><span>CLF on squared target distance</span></div>
+  <div class="is-cbf"><b>Avoid obstacles</b><span>CBF outside obstacle clearance</span></div>
+  <div class="is-cbf"><b>Avoid collisions</b><span>CBF above minimum robot separation</span></div>
+  <div class="is-cbf"><b>Preserve connectivity</b><span>CBF below selected communication range</span></div>
+  <div class="is-cbf"><b>Respect speed limits</b><span>Bound on the control input</span></div>
 </div>
 
-<p class="takeaway">Collective strategy and physical safety are kept modular.</p>
+<p class="takeaway">The active constraints depend on the collective task being executed.</p>
 
 ---
+
+[//]: # (# Solving it in a distributed way)
+
+[//]: # (### Alternating Direction Method of Multipliers &#40;ADMM&#41;)
+
+[//]: # ()
+[//]: # (<div class="flow">)
+
+[//]: # (  <div class="flow-stage">)
+
+[//]: # (    <span class="flow-kicker">Step 1</span>)
+
+[//]: # (    <strong>Split</strong>)
+
+[//]: # (    <p>The global problem is decomposed into subproblems: one per robot, one per relevant pair.</p>)
+
+[//]: # (  </div>)
+
+[//]: # (  <div class="flow-link"><span class="flow-arrow">&#10230;</span></div>)
+
+[//]: # (  <div class="flow-stage">)
+
+[//]: # (    <span class="flow-kicker">Step 2</span>)
+
+[//]: # (    <strong>Exchange</strong>)
+
+[//]: # (    <p>Neighbors exchange the variables their shared constraints depend on.</p>)
+
+[//]: # (  </div>)
+
+[//]: # (  <div class="flow-link"><span class="flow-arrow">&#10230;</span></div>)
+
+[//]: # (  <div class="flow-stage">)
+
+[//]: # (    <span class="flow-kicker">Step 3</span>)
+
+[//]: # (    <strong>Agree</strong>)
+
+[//]: # (    <p>Each robot updates its own command, until neighbors agree on a common safe solution.</p>)
+
+[//]: # (  </div>)
+
+[//]: # (</div>)
+
+[//]: # ()
+[//]: # (<div class="flow-feedback"><span>repeat until convergence</span></div>)
+
+[//]: # ()
+[//]: # (<p class="takeaway">The safety filter is itself an aggregate program: no global synchronization, only neighbor-to-neighbor exchange.</p>)
+
+[//]: # ()
+[//]: # (---)
 
 # Distributed safety constraints
 
@@ -310,40 +377,6 @@ A collective strategy may correctly describe <strong>where the swarm should go</
 
 <p class="takeaway">Pairwise constraints expose the distributed structure of the problem.</p>
 
----
-
-# What is enforced?
-
-<div class="constraint-list">
-  <div><b>Reach the target</b><span>CLF on squared target distance</span></div>
-  <div><b>Avoid obstacles</b><span>CBF outside obstacle clearance</span></div>
-  <div><b>Avoid collisions</b><span>CBF above minimum robot separation</span></div>
-  <div><b>Preserve connectivity</b><span>CBF below selected communication range</span></div>
-  <div><b>Respect speed limits</b><span>Bound on the control input</span></div>
-</div>
-
-<p class="takeaway">The active constraints depend on the collective task being executed.</p>
-
----
-
-# Solving it in a distributed way
-### One global problem, split into local and edge-wise subproblems
-
-<div class="formula">
-\[
-\min_{u_i \in \mathcal{U},\, \delta_i \ge 0} \; \sum_{i=1}^{N} \left( \|u_i - u_{nom,i}\|^2 + \rho\,\delta_i^2 \right)
-\]
-</div>
-
-<div class="three-beats">
-  <span><b>1.</b> Split into local and pairwise subproblems</span>
-  <span><b>2.</b> Exchange coupled variables</span>
-  <span><b>3.</b> Iterate with ADMM until agreement</span>
-</div>
-
-<p class="small-center">The formulation specifies <em>what</em> must be enforced, independently of <em>how</em> the solution is computed.</p>
-
-<p class="takeaway">The safety filter is itself an aggregate program: no global synchronization, only neighbor-to-neighbor exchange.</p>
 
 ---
 
