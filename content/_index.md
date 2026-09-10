@@ -36,11 +36,11 @@ Mälardalen University, Västerås, Sweden</span>
 
 <div class="motion-pair">
   <div class="motion-item">
-    <img class="motion-figure" src="./images/drones_changing-formation.png" alt="The swarm splits to squeeze between the obstacles, its communication links break, and it reforms on the other side" />
+    <img class="motion-figure" src="./images/drones_changing-formation-web.png" alt="The swarm splits to squeeze between the obstacles, its communication links break, and it reforms on the other side" />
     <p class="motion-caption is-problem">the group splits to get through: links break</p>
   </div>
   <div class="motion-item">
-    <img class="motion-figure" src="./images/drones_avoiding_formation.png" alt="The swarm goes around the obstacle while staying connected" />
+    <img class="motion-figure" src="./images/drones_avoiding_formation-web.png" alt="The swarm goes around the obstacle while staying connected" />
     <p class="motion-caption is-safe">what we want: around the obstacle, still connected</p>
   </div>
 </div>
